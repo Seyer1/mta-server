@@ -122,7 +122,7 @@ function changeVisibilityLogin(modo)
 	end
 end
 
-function isOK(user, pw, pw2)
+function isOK(u, pw, pw2)
 	if u == "" or pw == "" or pw2 == "" then exports.SZMisc:_msgcl("gral", "err", "all")
 	elseif pw ~= pw2 then exports.SZMisc:_msgcl("login", "err", "dist")
 	elseif (#u < 5) then exports.SZMisc:_msgcl("login", "err", "uDig")
