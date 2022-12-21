@@ -29,7 +29,7 @@ addEventHandler("onMarkerHit", root,
 
 function confirmar(thePlayer)
 	if getPlayerMoney(thePlayer) >= 50000 then
-		local n = math.random(1000000000000000, 99999999999999999)
+		local n = math.random(1, 999999999)
 		local checkN = exports.SZSQL:_QuerySingle("SELECT Tarjeta FROM bank WHERE Tarjeta = ?", n)
 		if not checkN then
 			local fecha = exports.SZMisc:_fecha()

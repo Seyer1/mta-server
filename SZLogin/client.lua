@@ -68,8 +68,8 @@ dgsEditSetMasked(dx.edit[5], true)
 addEventHandler("onDgsMouseClick", dgsRoot,
 	function(_, state)
 		if state == "down" then
-			if (source == dx.button[2]) then changeVisibility("reg")
-			elseif (source == dx.button[4]) then changeVisibility("login")
+			if (source == dx.button[2]) then changeVisibilityLogin("reg")
+			elseif (source == dx.button[4]) then changeVisibilityLogin("login")
 			else
 				local u, pw, pw2 = get(source)
 				if isOK(u, pw, pw2) then
@@ -112,7 +112,7 @@ function get(source)
 	return u, pw, pw2 or pw
 end
 
-function changeVisibility(modo)
+function changeVisibilityLogin(modo)
 	if modo == "login" then
 		dgsSetVisible(dx.window[2], false)
 		dgsSetVisible(dx.window[1], true)
@@ -122,7 +122,7 @@ function changeVisibility(modo)
 	end
 end
 
-function isOK(u, pw, pw2)
+function isOK(user, pw, pw2)
 	if u == "" or pw == "" or pw2 == "" then exports.SZMisc:_msgcl("gral", "err", "all")
 	elseif pw ~= pw2 then exports.SZMisc:_msgcl("login", "err", "dist")
 	elseif (#u < 5) then exports.SZMisc:_msgcl("login", "err", "uDig")

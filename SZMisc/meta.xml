@@ -14,5 +14,6 @@
 	<export function="_respawnget" type="server" />
 	<export function="_fecha" type="server" />
 	<export function="_msgsv" type="server" />
+	<export function="_msgsvstaff" type="server" />
 	<export function="_msgcl" type="client" />
 </meta>

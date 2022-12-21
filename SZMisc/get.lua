@@ -5,14 +5,15 @@ function _get(origen, modo, thePlayer)
         local serial = getPlayerSerial(thePlayer)
         local money = getPlayerMoney(thePlayer)
         local nick = getPlayerName(thePlayer)
-        local skin = getElementModel(thePlayer)
+        local skin = getElementModel(thePlayer) or 0
         local int = getElementInterior(thePlayer)
         local dim = getElementDimension(thePlayer)
         local hp = getElementHealth(thePlayer)
         local armor = getPedArmor(thePlayer)
         local x, y, z = getElementPosition(thePlayer)
         local xr, yr, zr = getElementRotation(thePlayer)
-        local team =  getTeamName(getPlayerTeam(thePlayer))
+        local team
+        if getPlayerTeam(thePlayer) then team = getTeamName(getPlayerTeam(thePlayer)) end
         local guns = { }
         for slot = 0, 12 do
             guns[slot] = 
@@ -28,6 +29,7 @@ function _get(origen, modo, thePlayer)
                 if modo == "todo" then return u, ip, serial, check.Depositado, money
                 elseif modo == "check" then return true
                 elseif modo == "act" then return check.Depositado
+                elseif modo == "admin" then return check.Depositado, check.Tarjeta, check.Lvl
                 end
             end
 
@@ -55,6 +57,20 @@ function _get(origen, modo, thePlayer)
             end
         elseif origen == "cmd" then
             if modo == "money" then return money end
+        elseif origen == "admin" then
+            if modo == "load" then
+                local vehName, vehHp, vehModel, vehOwner, checkBank, cardDep, cardNum, cardLvl
+                local vehicle = getPedOccupiedVehicle(thePlayer)
+                if vehicle then 
+                    vehName = getVehicleName(vehicle)
+                    vehHp = getElementHealth(vehicle).."%"
+                    vehModel = getElementModel(vehicle)
+                end
+                checkBank = _get("bank", "check", thePlayer)
+                if checkBank then cardDep, cardNum, cardLvl = _get("bank", "admin", thePlayer) checkBank = "Sí" end
+                return u, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner or "N/A", vehName or "No", vehHp or "N/A", vehModel or "N/A", checkBank or "No", cardDep or "N/A", cardNum or "N/A", cardLvl or "N/A"    
+            elseif modo == "staffInfo" then return u, ip, serial
+            end
         end
     end
 end

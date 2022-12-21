@@ -1,7 +1,5 @@
 function abrir()
-	if isGuestAccount(getPlayerAccount(source)) then
-		triggerClientEvent(source, "[SZLogin]:abrir", source)
-	end
+	if isGuestAccount(getPlayerAccount(source)) then triggerClientEvent(source, "[SZLogin]:abrir", source) end
 end
 addEventHandler("onPlayerJoin", getRootElement(), abrir)
 addEventHandler("onPlayerLogout", getRootElement(), abrir)

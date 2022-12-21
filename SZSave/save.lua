@@ -22,32 +22,30 @@ addEventHandler("onResourceStop", getRootElement(),
 
 addEventHandler("onPlayerLogin", getRootElement(),
 	function()
-		if not isGuestAccount(getPlayerAccount(source)) then 
-			local checkS, checkD, checkA, checkV, checkX, checkY, checkZ, checkXr, checkYr, checkZr, checkInt, checkDim, checkTeam = exports.SZMisc:_get("user", "load", source)
-			setElementModel(source, checkS)
-			setPlayerMoney(source, checkD)
-			setPedArmor(source, checkA)
-			setElementHealth(source, checkV)
-			setElementPosition(source, checkX, checkY, checkZ)
-			setElementRotation(source, checkXr, checkYr, checkZr)
-			setElementInterior(source, checkInt)
-			setElementDimension(source, checkDim)
-			setPlayerTeam(source, getTeamFromName(checkTeam))
-			exports.SZJobs:_setTeam(source, checkTeam)
-			--if (type(checkW) == "table") then 
-			--	for _, weapon in pairs (checkW) do 
-			--		if (weapon.gun and weapon.ammo) then 
-			--			giveWeapon(source, weapon.gun, weapon.ammo)
-			--		end 
-			--	end
-			--end
-		end
+		local checkS, checkD, checkA, checkV, checkX, checkY, checkZ, checkXr, checkYr, checkZr, checkInt, checkDim, checkTeam = exports.SZMisc:_get("user", "load", source)
+		setElementModel(source, checkS)
+		setPlayerMoney(source, checkD)
+		setPedArmor(source, checkA)
+		setElementHealth(source, checkV)
+		setElementPosition(source, checkX, checkY, checkZ)
+		setElementRotation(source, checkXr, checkYr, checkZr)
+		setElementInterior(source, checkInt)
+		setElementDimension(source, checkDim)
+		setPlayerTeam(source, getTeamFromName(checkTeam))
+		exports.SZJobs:_setTeam(source, checkTeam)
+		--if (type(checkW) == "table") then 
+		--	for _, weapon in pairs (checkW) do 
+		--		if (weapon.gun and weapon.ammo) then 
+		--			giveWeapon(source, weapon.gun, weapon.ammo)
+		--		end 
+		--	end
+		--end
 	end
 )
 
-addEventHandler("onPlayerSpawn",getRootElement(),
+addEventHandler("onPlayerSpawn", getRootElement(),
 	function()
-		if not isGuestAccount(getPlayerAccount(source)) then 
+		if not isGuestAccount(getPlayerAccount(source)) then
 			local skin, team = exports.SZMisc:_respawnget(source)
 			setElementModel(source, skin)
 			setPlayerTeam(source, team)

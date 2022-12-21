@@ -44,5 +44,21 @@ function _msgsv(origen, opt, modo, thePlayer)
             elseif modo == "on" then outputChatBox(err.. "Tenes que estar desconectado para usar este panel.", thePlayer, 255, 255, 255, true)
             end
         end
+    elseif origen == "admin" then
+        if opt == "err" then
+            if modo == "bankmin" then outputChatBox(err.. "Cantidad invalida, supera el limite o le quedaria < 0", thePlayer, 255, 255, 255, true) 
+            elseif modo == "bankalreadythatlvl" then outputChatBox(err.. "El usuario ya tiene esa tarjeta.", thePlayer, 255, 255, 255, true) 
+            end
+        end
+    end
+end
+
+function _msgsvstaff(modo, staffName, cant, lvl, thePlayer)
+    local sv = "#FFFF00[Server]  "
+    if modo == "bankdep" then outputChatBox(sv.. "El staff "..staffName.." te agregó $"..cant.." de tu cuenta bancaria.", thePlayer, 255, 255, 255, true)
+    elseif modo == "bankext" then outputChatBox(sv.. "El staff "..staffName.." te quitó $"..cant.." de tu cuenta bancaria.", thePlayer, 255, 255, 255, true)
+    elseif modo == "bankdelCard" then outputChatBox(sv.. "El staff "..staffName.." eliminó tu tarjeta.", thePlayer, 255, 255, 255, true)
+    elseif modo == "bankgiveCard" then outputChatBox(sv.. "El staff "..staffName.." te regaló una tarjeta.", thePlayer, 255, 255, 255, true)
+    elseif modo == "bankchglvl" then outputChatBox(sv.. "El staff "..staffName.." actualizó tu tarjeta a "..lvl..".", thePlayer, 255, 255, 255, true)
     end
 end
