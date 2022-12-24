@@ -4,77 +4,71 @@ local sx, sy = guiGetScreenSize()
 local resX, resY = 1920, 1080
 local x, y = (sx/resX), (sy/resY)
 
-dx = {
-	window = {},
-	tab = {},
-	label = {},
-	button = {},
-	edit = {}
-}
-
 ---[Windows]---
-dx.window[1] = dgsCreateWindow(x*800, y*400, x*323, y*284, "[SZLogin] - by Seyer", false, _, _, _, _, _, _, _, true)
-dgsWindowSetMovable(dx.window[1], false)
-dgsWindowSetSizable(dx.window[1], false)
-dgsSetVisible(dx.window[1], false)
+local login_panel = dgsCreateWindow(x*800, y*400, x*323, y*284, "[SZLogin] - by Seyer", false, _, _, _, _, _, _, _, true)
+dgsWindowSetMovable(login_panel, false)
+dgsWindowSetSizable(login_panel, false)
+dgsSetVisible(login_panel, false)
 
-dx.window[2] = dgsCreateWindow(x*800, y*400, x*326, y*340, "[SZRegister] - by Seyer", false, _, _, _, _, _, _, _, true)
-dgsWindowSetMovable(dx.window[2], false)
-dgsWindowSetSizable(dx.window[2], false)
-dgsSetVisible(dx.window[2], false)
+local register_panel = dgsCreateWindow(x*800, y*400, x*326, y*340, "[SZRegister] - by Seyer", false, _, _, _, _, _, _, _, true)
+dgsWindowSetMovable(register_panel, false)
+dgsWindowSetSizable(register_panel, false)
+dgsSetVisible(register_panel, false)
 
 ---[Tabs]---
-dx.tab[1] = dgsCreateTabPanel(x*0, y*(-22), x*323, y*283.5, false, dx.window[1])-- x*20 => x*0 
-dx.tab[2] = dgsCreateTabPanel(x*0, y*(-22), x*326, y*339.5, false, dx.window[2])-- x*20 => x*0 
+local login_tab = dgsCreateTabPanel(x*0, y*(-22), x*323, y*283.5, false, login_panel)-- x*20 => x*0 
+local register_tab = dgsCreateTabPanel(x*0, y*(-22), x*326, y*339.5, false, register_panel)-- x*20 => x*0 
 
 ---[Labels]---
-dx.label[1] = dgsCreateLabel(x*33, y*38, x*48, y*15, "Usuario:", false, dx.tab[1])
-dx.label[2] = dgsCreateLabel(x*257, y*63, x*56, y*15, "(máx. 25)", false, dx.tab[1])
-dx.label[3] = dgsCreateLabel(x*10, y*102, x*71, y*16, "Contraseña:", false, dx.tab[1])
-dx.label[4] = dgsCreateLabel(x*257, y*128, x*56, y*15, "(máx. 25)", false, dx.tab[1])
-dx.label[5] = dgsCreateLabel(x*33, y*38, x*48, y*15, "Usuario:", false, dx.tab[2])
-dx.label[6] = dgsCreateLabel(x*257, y*63, x*56, y*15, "(máx. 25)", false, dx.tab[2])
-dx.label[7] = dgsCreateLabel(x*10, y*102, x*71, y*16, "Contraseña:", false, dx.tab[2])
-dx.label[8] = dgsCreateLabel(x*257, y*128, x*56, y*15, "(máx. 25)", false, dx.tab[2])
-dx.label[9] = dgsCreateLabel(x*25, y*157, x*45, y*13, "Repetir", false, dx.tab[2])
-dx.label[10] = dgsCreateLabel(x*10, y*170, x*71, y*16, "contraseña:", false, dx.tab[2])
-dx.label[11] = dgsCreateLabel(x*257, y*186, x*56, y*15, "(máx. 25)", false, dx.tab[2])
+local user_login = dgsCreateLabel(x*33, y*38, x*48, y*15, "Usuario:", false, login_tab)
+local max_login = dgsCreateLabel(x*257, y*63, x*56, y*15, "(máx. 25)", false, login_tab)
+local pw_login = dgsCreateLabel(x*10, y*102, x*71, y*16, "Contraseña:", false, login_tab)
+local max2_login = dgsCreateLabel(x*257, y*128, x*56, y*15, "(máx. 25)", false, login_tab)
+
+local user_register = dgsCreateLabel(x*33, y*38, x*48, y*15, "Usuario:", false, register_tab)
+local max_register = dgsCreateLabel(x*257, y*63, x*56, y*15, "(máx. 25)", false, register_tab)
+local pw_register = dgsCreateLabel(x*10, y*102, x*71, y*16, "Contraseña:", false, register_tab)
+local max2_register = dgsCreateLabel(x*257, y*128, x*56, y*15, "(máx. 25)", false, register_tab)
+local pw2_register = dgsCreateLabel(x*25, y*157, x*45, y*13, "Repetir", false, register_tab)
+local pw2nd_register = dgsCreateLabel(x*10, y*170, x*71, y*16, "contraseña:", false, register_tab)
+local max3_register = dgsCreateLabel(x*257, y*186, x*56, y*15, "(máx. 25)", false, register_tab)
 
 ---[Buttons]---
-dx.button[1] = dgsCreateButton(x*9, y*163, x*304, y*48, "Login", false, dx.tab[1], _, _, _, _, _, _, tocolor(66, 134, 244, 150), tocolor(10, 250, 244, 150), tocolor(130, 200, 244, 150))
-dx.button[2] = dgsCreateButton(x*9, y*226, x*304, y*48, "Register", false, dx.tab[1], _, _, _, _, _, _, tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150))
-dx.button[3] = dgsCreateButton(x*9, y*224, x*304, y*48, "Register", false, dx.tab[2], _, _, _, _, _, _, tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150))
-dx.button[4] = dgsCreateButton(x*9, y*283, x*304, y*48, "Login", false, dx.tab[2], _, _, _, _, _, _, tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150))
+local gologin = dgsCreateButton(x*9, y*163, x*304, y*48, "Login", false, login_tab, _, _, _, _, _, _, tocolor(66, 134, 244, 150), tocolor(10, 250, 244, 150), tocolor(130, 200, 244, 150))
+local turnreg = dgsCreateButton(x*9, y*226, x*304, y*48, "Register", false, login_tab, _, _, _, _, _, _, tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150))
+
+local goregister = dgsCreateButton(x*9, y*224, x*304, y*48, "Register", false, register_tab, _, _, _, _, _, _, tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150))
+local turnlog = dgsCreateButton(x*9, y*283, x*304, y*48, "Login", false, register_tab, _, _, _, _, _, _, tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150), tocolor(66, 134, 244, 150))
 
 ---[Edits]---
-dx.edit[1] = dgsCreateEdit(x*87, y*30, x*226, y*33, "", false, dx.tab[1])
-dgsEditSetMaxLength(dx.edit[1], 25)
+local user_edit_login = dgsCreateEdit(x*87, y*30, x*226, y*33, "", false, login_tab)
+dgsEditSetMaxLength(user_edit_login, 25)
 
-dx.edit[2] = dgsCreateEdit(x*87, y*95, x*226, y*33, "", false, dx.tab[1])
-dgsEditSetMaxLength(dx.edit[2], 25)
-dgsEditSetMasked(dx.edit[2], true)
+local pw_edit_login = dgsCreateEdit(x*87, y*95, x*226, y*33, "", false, login_tab)
+dgsEditSetMaxLength(pw_edit_login, 25)
+dgsEditSetMasked(pw_edit_login, true)
 
-dx.edit[3] = dgsCreateEdit(x*87, y*30, x*226, y*33, "", false, dx.tab[2])
-dgsEditSetMaxLength(dx.edit[3], 25)
+local user_edit_reg = dgsCreateEdit(x*87, y*30, x*226, y*33, "", false, register_tab)
+dgsEditSetMaxLength(user_edit_reg, 25)
 
-dx.edit[4] = dgsCreateEdit(x*87, y*95, x*226, y*33, "", false, dx.tab[2])
-dgsEditSetMaxLength(dx.edit[4], 25)
-dgsEditSetMasked(dx.edit[4], true)
+local pw_edit_reg = dgsCreateEdit(x*87, y*95, x*226, y*33, "", false, register_tab)
+dgsEditSetMaxLength(pw_edit_reg, 25)
+dgsEditSetMasked(pw_edit_reg, true)
 
-dx.edit[5] = dgsCreateEdit(x*87, y*153, x*226, y*33, "", false, dx.tab[2])
-dgsEditSetMaxLength(dx.edit[5], 25)
-dgsEditSetMasked(dx.edit[5], true)
+local pw2_edit_reg = dgsCreateEdit(x*87, y*153, x*226, y*33, "", false, register_tab)
+dgsEditSetMaxLength(pw2_edit_reg, 25)
+dgsEditSetMasked(pw2_edit_reg, true)
 -------------------------------------------------------------------------------Funciones-------------------------------------------------------------------------------
 addEventHandler("onDgsMouseClick", dgsRoot,
 	function(_, state)
 		if state == "down" then
-			if (source == dx.button[2]) then changeVisibilityLogin("reg")
-			elseif (source == dx.button[4]) then changeVisibilityLogin("login")
-			else
-				local u, pw, pw2 = get(source)
-				if isOK(u, pw, pw2) then
-					if (source == dx.button[1]) then triggerServerEvent("[SZLogin]:login", getLocalPlayer(), getLocalPlayer(), u, pw)
-					else triggerServerEvent("[SZLogin]:register", getLocalPlayer(), getLocalPlayer(), u, pw)
+			if (source == turnreg) then changeVisibility("register")
+			elseif (source == turnlog) then changeVisibility("login")
+			elseif (source == gologin) or (source == goregister) then
+				local user, pw, pw2 = getText(source)
+				if isOK(user, pw, pw2) then
+					if (source == gologin) then triggerServerEvent("[SZLogin]:login", localPlayer, localPlayer, user, pw)
+					else triggerServerEvent("[SZLogin]:register", localPlayer, localPlayer, user, pw)
 					end
 				end
 			end
@@ -82,51 +76,105 @@ addEventHandler("onDgsMouseClick", dgsRoot,
 	end
 )
 
-addEvent("[SZLogin]:abrir", true)
-addEventHandler("[SZLogin]:abrir", getLocalPlayer(),
-	function()
-		dgsSetVisible(dx.window[1], true)
-		showCursor(true)
+addEvent("[SZLogin]:openClose", true)
+addEventHandler("[SZLogin]:openClose", localPlayer,
+	function(whatDo)
+		if whatDo == "show" then
+			dgsSetVisible(login_panel, true)
+			showCursor(true)
+			fancy()
+		elseif whatDo == "close" then
+			dgsSetVisible(login_panel, false)
+			dgsSetVisible(register_panel, false)
+			showCursor(false)
+		end
 	end
 )
 
-addEvent("[SZLogin]:cerrar", true)
-addEventHandler("[SZLogin]:cerrar", getLocalPlayer(),
-	function()
-		dgsSetVisible(dx.window[1], false)
-		dgsSetVisible(dx.window[2], false)
-		showCursor(false)
+function getText(source)
+	local user, pw, pw2
+	if (source == gologin) then
+		user = dgsGetText(user_edit_login)
+		pw = dgsGetText(pw_edit_login)
+	elseif (source == goregister) then
+		user = dgsGetText(user_edit_reg)
+		pw = dgsGetText(pw_edit_reg)
+		pw2 = dgsGetText(pw2_edit_reg)
 	end
-)
-
-function get(source)
-	local u, pw, pw2
-	if (source == dx.button[1]) then
-		u = dgsGetText(dx.edit[1])
-		pw = dgsGetText(dx.edit[2])
-	elseif (source == dx.button[3]) then
-		u = dgsGetText(dx.edit[3])
-		pw = dgsGetText(dx.edit[4])
-		pw2 = dgsGetText(dx.edit[5])
-	end
-	return u, pw, pw2 or pw
+	return user, pw, pw2 or pw
 end
 
-function changeVisibilityLogin(modo)
-	if modo == "login" then
-		dgsSetVisible(dx.window[2], false)
-		dgsSetVisible(dx.window[1], true)
-	else
-		dgsSetVisible(dx.window[1], false)
-		dgsSetVisible(dx.window[2], true)
+function changeVisibility(whatDo)
+	if whatDo == "login" then
+		dgsSetVisible(register_panel, false)
+		dgsSetVisible(login_panel, true)
+	elseif whatDo == "register" then
+		dgsSetVisible(login_panel, false)
+		dgsSetVisible(register_panel, true)
 	end
 end
 
-function isOK(u, pw, pw2)
-	if u == "" or pw == "" or pw2 == "" then exports.SZMisc:_msgcl("gral", "err", "all")
+function isOK(user, pw, pw2)
+	if user == "" or pw == "" or pw2 == "" then exports.SZMisc:_msgcl("gral", "err", "all")
 	elseif pw ~= pw2 then exports.SZMisc:_msgcl("login", "err", "dist")
-	elseif (#u < 5) then exports.SZMisc:_msgcl("login", "err", "uDig")
+	elseif (#user < 5) then exports.SZMisc:_msgcl("login", "err", "uDig")
 	elseif (#pw < 6) then exports.SZMisc:_msgcl("login", "err", "pwDig")
 	else return true 
 	end
+end
+
+function fancy()
+	local font = {
+		[1] = dxCreateFont("font/medium.ttf", 10),
+		[2] = dxCreateFont("font/medium.ttf", 14)
+	}
+	
+	local elementsWithFont1 = {
+		[1] = login_panel,
+		[2] = register_panel,
+		[3] = user_login,
+		[4] = pw_login,
+		[5] = user_register,
+		[6] = pw_register,
+		[7] = pw2_register,
+		[8] = pw2nd_register,
+		[9] = max_login,
+		[10] = max2_login,
+		[11] = max_register,
+		[12] = max2_register,
+		[13] = max3_register,
+		[14] = user_edit_login,
+		[15] = pw_edit_login,
+		[16] = user_edit_reg,
+		[17] = pw_edit_reg,
+		[18] = pw2_edit_reg
+	}
+	for _, v in pairs(elementsWithFont1) do dgsSetFont(v, font[1]) end
+
+	local white_labels = {
+		[1] = user_login,
+		[2] = pw_login,
+		[3] = user_register,
+		[4] = pw_register,
+		[5] = pw2_register,
+		[6] = pw2nd_register
+	}
+	for _, v in pairs(white_labels) do dgsLabelSetColor(v, 255, 255, 255) end
+	
+	local red_labels = {
+		[1] = max_login,
+		[2] = max2_login,
+		[3] = max_register,
+		[4] = max2_register,
+		[5] = max3_register
+	}
+	for _, v in pairs(red_labels) do dgsLabelSetColor(v, 255, 0, 0) end
+
+	local buttons = {
+		[1] = gologin,
+		[2] = turnreg,
+		[3] = goregister,
+		[4] = turnlog
+	}
+	for _, v in pairs(buttons) do dgsSetFont(v, font[2]) end
 end

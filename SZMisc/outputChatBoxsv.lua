@@ -4,11 +4,11 @@ function _msgsv(origen, opt, modo, thePlayer)
 
     if origen == "gral" then  
         if opt == "err" then
-            if modo == "nro" then outputChatBox(err.. "Solo podes poner números.", thePlayer, 255, 255, 255, true)
+            if modo == "num" then outputChatBox(err.. "Solo podes poner números.", thePlayer, 255, 255, 255, true)
             elseif modo == "all" then outputChatBox(err.. "Rellena todos los campos.", thePlayer, 255, 255, 255, true)
             elseif modo == "some" then outputChatBox(err.. "Completa el campo.", thePlayer, 255, 255, 255, true)
-            elseif modo == "sv" then outputChatBox(err.. "Hubo un error del lado del servidor. Contactate con Seyer.", thePlayer, 255, 255, 255, true)
             elseif modo == "tpveh" then outputChatBox(err.. "No podes usar el marker estando en vehículos.", thePlayer, 255, 255, 255, true)
+            elseif modo == "sv" then outputChatBox(err.. "Hubo un error del lado del servidor. Contactate con Seyer.", thePlayer, 255, 255, 255, true)
             end
         end
     
@@ -21,12 +21,12 @@ function _msgsv(origen, opt, modo, thePlayer)
 
     elseif origen == "bank" then
         if opt == "info" then
-            if modo == "nuevaTarjeta" then outputChatBox(inf.. "Conseguiste tu tarjeta correctamente.\n"..inf.."Ahora anda a la ventanilla para hacer las operaciones!", thePlayer, 255, 255, 255, true) end
+            if modo == "newCard" then outputChatBox(inf.. "Conseguiste tu tarjeta correctamente.\n"..inf.."Ahora anda a la ventanilla para hacer las operaciones!", thePlayer, 255, 255, 255, true) end
         else
-            if modo == "cant" then outputChatBox(err.. "No tenes esa cantidad de dinero.", thePlayer, 255, 255, 255, true)
-            elseif modo == "ya" then outputChatBox(err.. "Ya tenes una tarjeta, no podes sacar otra.", thePlayer, 255, 255, 255, true)
+            if modo == "amount" then outputChatBox(err.. "No tenes esa cantidad de dinero.", thePlayer, 255, 255, 255, true)
+            elseif modo == "already" then outputChatBox(err.. "Ya tenes una tarjeta, no podes sacar otra.", thePlayer, 255, 255, 255, true)
             elseif modo == "n/a" then outputChatBox(err.. "No tenes tarjeta. Para conseguirla anda 'Permisos y licencias'.", thePlayer, 255, 255, 255, true)
-            elseif modo == "monto" then outputChatBox(err.. "La cantidad mínima a depositar es $1.", thePlayer, 255, 255, 255, true)
+            elseif modo == "min" then outputChatBox(err.. "La cantidad mínima a depositar es $1.", thePlayer, 255, 255, 255, true)
             elseif modo == "max" then outputChatBox(err.. "Con esa acción superas el límite de dinero.", thePlayer, 255, 255, 255, true)
             end
         end
