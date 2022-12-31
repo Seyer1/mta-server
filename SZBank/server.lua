@@ -10,17 +10,17 @@ setElementInterior(ConseguirTarjeta, 10)
 addEventHandler("onMarkerHit", root,
 	function(thePlayer)
 		if getElementType(thePlayer) == "player" and not isPedInVehicle(thePlayer) then
-			local check = exports.SZMisc:_get("bank", "check", thePlayer)
+			local check = exports.SZMisc:_get("bank", "getPlayerCard", thePlayer)
 			if check then
 				if (source == Principal) then
-					local dep = exports.SZMisc:_get("bank", "refresh", thePlayer)
-					triggerClientEvent(thePlayer, "[SZBank]:refreshDep", thePlayer, dep, dep)
-					triggerClientEvent(thePlayer, "[SZBank]:open", thePlayer)
+					local dep = exports.SZMisc:_get("bank", "getPlayerBankDep", thePlayer)
+					triggerClientEvent(thePlayer, "[SZBank]:refreshDep", thePlayer, dep)
+					triggerClientEvent(thePlayer, "[SZBank]:open", thePlayer, "openMainBankPanel")
 				elseif (source == ConseguirTarjeta) then exports.SZMisc:_msgsv("bank", "err", "already", thePlayer)
 				end
 			else
 				if (source == Principal) then exports.SZMisc:_msgsv("bank", "err", "n/a", thePlayer)
-				elseif (source == ConseguirTarjeta) then triggerClientEvent(thePlayer, "[SZBank]:get", thePlayer)
+				elseif (source == ConseguirTarjeta) then triggerClientEvent(thePlayer, "[SZBank]:open", thePlayer, "openGetCardPanel")
 				end
 			end
 		end
@@ -33,7 +33,7 @@ function confirmar(thePlayer)
 		local checkNum = exports.SZSQL:_QuerySingle("SELECT Tarjeta FROM bank WHERE Tarjeta = ?", cardNum)
 		if not checkNum then
 			local date = exports.SZMisc:_fecha()
-			local user, nick, ip, serial = exports.SZMisc:_get("user", "some", thePlayer)
+			local user, nick, ip, serial = exports.SZMisc:_get("user", "getSomePlayerInfo", thePlayer)
 			exports.SZSQL:_Exec("INSERT INTO bank(Usuario, Tarjeta, IP, Serial, Obtenida) VALUES(?, ?, ?, ?, ?)", user, cardNum, ip, serial, date)
 			exports.SZMisc:_msgsv("bank", "info", "newCard", thePlayer)
 			takePlayerMoney(thePlayer, 50000)
@@ -48,17 +48,17 @@ addEventHandler("[SZBank]:confirm", getRootElement(), confirmar)
 addEvent("[SZBank]:depext", true)
 addEventHandler("[SZBank]:depext", getRootElement(),
 	function(thePlayer, amount, whatDo)
-		local user, ip, serial, actualDep, money = exports.SZMisc:_get("bank", "all", thePlayer)
+		local user, ip, serial, actualDep, money = exports.SZMisc:_get("bank", "getSomePlayerBankInfo", thePlayer)
 		triggerClientEvent(thePlayer, "[SZBank]:refreshDep", thePlayer, actualDep)
 		local date = exports.SZMisc:_fecha()
 
 		if validar(amount, thePlayer) then
 			local newDep
-			if (actualDep + amount <= 2147483278 and whatDo == "depsv" and money >= amount) then
+			if (actualDep + amount <= 2147483278 and whatDo == "bankDeposite" and money >= amount) then
 				newDep = actualDep + amount
 				takePlayerMoney(thePlayer, amount)
 				exports.SZSQL:_Exec("INSERT INTO bankdeplog(Usuario, Monto, Fecha, IP, Serial) VALUES(?, ?, ?, ?, ?)", user, amount, date, ip, serial)
-			elseif (amount + money <= 99999999 and whatDo == "extsv" and actualDep >= amount) then
+			elseif (amount + money <= 99999999 and whatDo == "bankExtraction" and actualDep >= amount) then
 				newDep = actualDep - amount
 				givePlayerMoney(thePlayer, amount)
 				exports.SZSQL:_Exec("INSERT INTO bankextlog(Usuario, Monto, Fecha, IP, Serial) VALUES(?, ?, ?, ?, ?)", user, amount, date, ip, serial)

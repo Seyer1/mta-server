@@ -16,21 +16,7 @@ setTimer(function()
 end, 1000, 0)
 
 function _setTeam(thePlayer, team)
-	if team == "Desempleado" then
-		setBlipColor(thePlayer, 255, 255, 255, 255)
-		setPlayerNametagColor(thePlayer, 255, 255, 255)
-	elseif team == "Policia" then
-		setBlipColor(thePlayer, 102, 204, 255, 255)
-		setPlayerNametagColor(thePlayer, 102, 204, 255)
-	elseif team == "SWAT" then
-		setBlipColor(thePlayer, 51, 153, 255, 255)
-		setPlayerNametagColor(thePlayer, 51, 153, 255)
-	elseif team == "FBI" then
-		setBlipColor(thePlayer, 0, 115, 230, 255)
-		setPlayerNametagColor(thePlayer, 0, 115, 230)
-	else
-		local r, g, b = getTeamColor(getPlayerTeam(thePlayer))
-		setBlipColor(thePlayer, r, g, b, 255)
-		setPlayerNametagColor(thePlayer, r, g, b)
-	end
+	local r, g, b = getTeamColor(team)
+	setBlipColor(thePlayer, r, g, b, 255)
+	setPlayerNametagColor(thePlayer, r, g, b)
 end

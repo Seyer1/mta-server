@@ -4,49 +4,40 @@ function _get(where, whatDo, thePlayer)
         if where == "bank" then
             local check = exports.SZSQL:_QuerySingle("SELECT * FROM bank WHERE Usuario = ?", user)
             if check then
-                if whatDo == "all" then return user, getPlayerIP(thePlayer), getPlayerSerial(thePlayer), check.Depositado, getPlayerMoney(thePlayer)
-                elseif whatDo == "check" then return true
-                elseif whatDo == "refresh" then return check.Depositado
+                if whatDo == "getSomePlayerBankInfo" then return user, getPlayerIP(thePlayer), getPlayerSerial(thePlayer), check.Depositado, getPlayerMoney(thePlayer)
+                elseif whatDo == "getPlayerCard" then return true
+                elseif whatDo == "getPlayerBankDep" then return check.Depositado
                 elseif whatDo == "admin" then return check.Depositado, check.Tarjeta, check.Lvl
                 end
             end
         elseif where == "veh" then
             local check = exports.SZSQL:_QuerySingle("SELECT * FROM vehicles WHERE Usuario = ?", user)
             if check then
-                if whatDo == "check" then return true 
-                elseif whatDo == "getvehicles" then return check.Vehicles
+                if whatDo == "getVehicle" then return true 
+                elseif whatDo == "getAllVehiclesFromPlayer" then return check.Vehicles
                 end
             end
 
         elseif where == "user" then
             local check = exports.SZSQL:_QuerySingle("SELECT * FROM users WHERE Usuario = ?", user)
             if check then
-                if whatDo == "some" then return user, getPlayerName(thePlayer), getPlayerIP(thePlayer), getPlayerSerial(thePlayer)
-                elseif whatDo == "load" then return check.Skin, check.Dinero, check.Armor, check.Vida, check.x, check.y, check.z, check.xr, check.yr, check.zr, check.Interior, check.Dimension, check.Team
-                elseif whatDo == "save" then 
+                if whatDo == "getSomePlayerInfo" then return user, getPlayerName(thePlayer), getPlayerIP(thePlayer), getPlayerSerial(thePlayer)
+                elseif whatDo == "getDBPlayerInfo" then return check.Skin, check.Dinero, check.Armor, check.Vida, check.x, check.y, check.z, check.xr, check.yr, check.zr, check.Interior, check.Dimension, check.Team
+                elseif whatDo == "getAllActualPlayerInfo" then 
                     local x, y, z = getElementPosition(thePlayer)
                     local xr, yr, zr = getElementRotation(thePlayer)
                     local team
-                    if getPlayerTeam(thePlayer) then team = getTeamName(getPlayerTeam(thePlayer)) end
-                    return getElementModel(thePlayer) or 0, getPlayerMoney(thePlayer), getPedArmor(thePlayer), getElementHealth(thePlayer), x, y, z, xr, yr, zr, getElementInterior(thePlayer), getElementDimension(thePlayer), team
-                elseif whatDo == "firstSpawn" then return check.x, check.y, check.z, check.xr, check.yr, check.zr, check.Skin, check.Team, check.Dinero
+                    if getPlayerTeam(thePlayer) then team = getTeamName(getPlayerTeam(thePlayer)) else team = "Desempleado" end
+                    return getElementModel(thePlayer) or 26, getPlayerMoney(thePlayer), getPedArmor(thePlayer), getElementHealth(thePlayer), x, y, z, xr, yr, zr, getElementInterior(thePlayer), getElementDimension(thePlayer), team
                 end
             else
-                if whatDo == "reg" then
+                if whatDo == "getRegistration" then
                     local checkS = exports.SZSQL:_QuerySingle("SELECT * FROM users WHERE Serial = ?", getPlayerSerial(thePlayer))
-                    if checkS then return true, getPlayerName(thePlayer), getPlayerIP(thePlayer), getPlayerSerial(thePlayer), checkS, checkS.Usuario
-                    else return false, getPlayerName(thePlayer), getPlayerIP(thePlayer), getPlayerSerial(thePlayer), false, false
-                    end
-                elseif whatDo == "regspawn" then
-                    local x, y, z, xr = 1674.18359375, 1447.8720703125, 10.783271789551, -90
-                    local hp, armor, skin, reg = 100, 0, 26, 0
-                    local team, rank = "Desempleado", "User"
-                    local int, dim = 0, 0
-                    return x, y, z, xr, skin, team, reg, hp, armor, rank, int, dim
+                    --if checkS then return true, getPlayerName(thePlayer), getPlayerIP(thePlayer), getPlayerSerial(thePlayer), checkS, checkS.Usuario
+                    return false, getPlayerName(thePlayer), getPlayerIP(thePlayer), getPlayerSerial(thePlayer), false, false
+                    --end
                 end
             end
-        elseif where == "cmd" then
-            if whatDo == "money" then return getPlayerMoney(thePlayer) end
         elseif where == "admin" then
             if whatDo == "load" then
                 local vehName, vehHp, vehModel, vehOwner, checkBank, cardDep, cardNum, cardLvl, team
@@ -58,7 +49,7 @@ function _get(where, whatDo, thePlayer)
                     vehModel = getElementModel(vehicle)
                 end
 
-                checkBank = _get("bank", "check", thePlayer)
+                checkBank = _get("bank", "getPlayerCard", thePlayer)
                 if checkBank then 
                     cardDep, cardNum, cardLvl = _get("bank", "admin", thePlayer)
                     checkBank = "Sí" 
@@ -79,8 +70,8 @@ function _get(where, whatDo, thePlayer)
     end
 end
 
-function _loginget(u) --SZLogin, server, 42
-    local check = exports.SZSQL:_QuerySingle("SELECT * FROM users WHERE Usuario = ?", u)
+function _loginget(user) --SZLogin, server, 42
+    local check = exports.SZSQL:_QuerySingle("SELECT * FROM users WHERE Usuario = ?", user)
     if check then return check.Usuario, check.IP, check.Serial, check.Password, check.Rank end
 end
 

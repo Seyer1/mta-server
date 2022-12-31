@@ -79,7 +79,7 @@ local dep = dgsCreateRadioButton(x*92, y*165, x*99, y*17, " Personalizado", fals
 local extAmount = dgsCreateEdit(x*13, y*190, x*258, y*30, "", false, bank_ext_tab)
 local depAmount = dgsCreateEdit(x*13, y*190, x*258, y*30, "", false, bank_dep_tab)
 
---------------------------------------------------------------------------------------   Principal   --------------------------------------------------------------------------------------
+--Main events
 addEventHandler("onDgsMouseClick", dgsRoot,
 	function(_, state)
 		if state == "down" then
@@ -92,12 +92,14 @@ addEventHandler("onDgsMouseClick", dgsRoot,
 
 addEvent("[SZBank]:open", true)
 addEventHandler("[SZBank]:open", getLocalPlayer(),
-	function()
-		dgsSetVisible(bank_main_panel, true)
+	function(whatDo)
 		showCursor(true)
-		fancy()
+		if whatDo == "openMainBankPanel" then dgsSetVisible(bank_main_panel, true)
+		elseif whatDo == "openGetCardPanel" then dgsSetVisible(bank_getCard_panel, true)
+		end
 	end
 )
+
 
 addEvent("[SZBank]:refreshDep", true)
 addEventHandler("[SZBank]:refreshDep", getLocalPlayer(),
@@ -107,16 +109,7 @@ addEventHandler("[SZBank]:refreshDep", getLocalPlayer(),
 	end
 )
 
-addEvent("[SZBank]:get", true)
-addEventHandler("[SZBank]:get", getLocalPlayer(),
-	function()
-		dgsSetVisible(bank_getCard_panel, true)
-		showCursor(true)
-		fancy()
-	end	
-)
-
-
+--Main functions
 function cursor(source)
 	if (source == bank_getCard_no) or (source == bank_confirmCard_yes) or (source == bank_confirmCard_no) or (source == closeMain) then showCursor(false) end
 end
@@ -163,8 +156,8 @@ function go(source)
 		if 	dgsRadioButtonGetSelected(ext5k) or dgsRadioButtonGetSelected(ext10k) or dgsRadioButtonGetSelected(ext25k) or
 			dgsRadioButtonGetSelected(ext50k) or dgsRadioButtonGetSelected(ext100k) or dgsRadioButtonGetSelected(ext250k) or
 			dgsRadioButtonGetSelected(ext) then
-			triggerServerEvent("[SZBank]:depext", getLocalPlayer(), getLocalPlayer(), amount, "extsv")
-		else triggerServerEvent("[SZBank]:depext", getLocalPlayer(), getLocalPlayer(), amount, "depsv")
+			triggerServerEvent("[SZBank]:depext", getLocalPlayer(), getLocalPlayer(), amount, "bankExtraction")
+		else triggerServerEvent("[SZBank]:depext", getLocalPlayer(), getLocalPlayer(), amount, "bankDeposite")
 		end
 	end
 end
@@ -191,8 +184,9 @@ function reset(modo)
 	end
 end
 
-function fancy ()
-	if dgsGetFont(bank_getCard_panel) == "default" then
+--Misc
+addEventHandler("onClientResourceStart", getRootElement(), 
+	function ()
 		local font = {
 			[1] = dxCreateFont("font/medium.ttf", 10),
 			[2] = dxCreateFont("font/medium.ttf", 14)
@@ -252,4 +246,4 @@ function fancy ()
 			dgsLabelSetColor(v, 53, 198, 39, 150)
 		end
 	end
-end
+)

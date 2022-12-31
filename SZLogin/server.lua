@@ -1,5 +1,5 @@
 function open()
-	if isGuestAccount(getPlayerAccount(source)) then triggerClientEvent(source, "[SZLogin]:openClose", source, "show") end
+	if isGuestAccount(getPlayerAccount(source)) then triggerClientEvent(source, "[SZLogin]:openClose", source, "openLoginPanel") end
 end
 addEventHandler("onPlayerJoin", getRootElement(), open)
 addEventHandler("onPlayerLogout", getRootElement(), open)
@@ -8,7 +8,7 @@ addEvent("[SZLogin]:register", true)
 addEventHandler("[SZLogin]:register", getRootElement(),
 	function(thePlayer, user, pw)
 		if isGuestAccount(getPlayerAccount(thePlayer)) then
-			local check, nick, ip, serial, checkS, originalAcc = exports.SZMisc:_get("user", "reg", thePlayer)
+			local check, nick, ip, serial, checkS, originalAcc = exports.SZMisc:_get("user", "getRegistration", thePlayer)
 			local date = exports.SZMisc:_fecha()
 			if not check and not getAccount(user) then
 				if not checkS then
@@ -17,12 +17,12 @@ addEventHandler("[SZLogin]:register", getRootElement(),
 						exports.SZSQL:_Exec("INSERT INTO users(Usuario, Password, IP, Serial, Registro, UltimaConexion) VALUES(?, ?, ?, ?, ?, ?)", user, sha, ip, serial, date, date)
 						exports.SZMisc:_msgsv("login", "info", "reg", thePlayer)
 						logIn(thePlayer, getAccount(user), sha)
-						local x, y, z, xr, yr, zr, skin, team, money = exports.SZMisc:_get("user", "firstSpawn", thePlayer)
+						local skin, money, armor, vida, x, y, z, xr, yr, zr, int, dim, team = exports.SZMisc:_get("user", "getDBPlayerInfo", thePlayer)
 						spawnPlayer(thePlayer, x, y, z, xr, yr, zr)
 						setElementModel(thePlayer, skin)
-						setPlayerTeam(thePlayer, team)
+						setPlayerTeam(thePlayer, getTeamFromName(team))
 						givePlayerMoney(thePlayer, money)
-						triggerClientEvent(thePlayer, "[SZLogin]:openClose", thePlayer, "close")
+						triggerClientEvent(thePlayer, "[SZLogin]:openClose", thePlayer, "closeLoginRegisterPanels")
 					else exports.SZMisc:_msgsv("gral", "err", "sv", thePlayer)
 					end
 				else	
@@ -45,9 +45,8 @@ addEventHandler("[SZLogin]:login", getRootElement(),
 			local date = exports.SZMisc:_fecha()
 			if (checkS == serial) and (checkPw == tostring(sha256(pw))) then
 				logIn(thePlayer, getAccount(user), tostring(sha256(pw)))
-				triggerClientEvent(thePlayer, "[SZLogin]:openClose", thePlayer, "close")
+				triggerClientEvent(thePlayer, "[SZLogin]:openClose", thePlayer, "closeLoginRegisterPanels")
 				exports.SZMisc:_msgsv("login", "info", "logged-in", thePlayer)
-				exports.SZSQL:_Exec("UPDATE users SET UltimaConexion = ? WHERE Usuario = ?", date, user)
 			elseif (checkS ~= serial) and (checkPw == tostring(sha256(pw))) then
 				exports.SZMisc:_msgsv("login", "err", "pc", thePlayer)
 				exports.SZSQL:_Exec("INSERT INTO usersloginseriallog(Nickname, IP, Serial, Usuario, IPOriginal, SerailOriginal, Fecha) VALUES(?, ?, ?, ?, ?, ?, ?)", nick, ip, serial, checkUser, checkIP, checkS, date)
@@ -55,5 +54,13 @@ addEventHandler("[SZLogin]:login", getRootElement(),
 			end
 		else exports.SZMisc:_msgsv("login", "err", "no", thePlayer)
 		end
+	end
+)
+
+addEventHandler("onPlayerQuit", getRootElement(),
+	function()
+		local user = getAccountName(getPlayerAccount(source))
+		local date = exports.SZMisc:_fecha()
+		exports.SZSQL:_Exec("UPDATE users SET UltimaConexion = ? WHERE Usuario = ?", date, user)
 	end
 )

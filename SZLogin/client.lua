@@ -58,12 +58,13 @@ dgsEditSetMasked(pw_edit_reg, true)
 local pw2_edit_reg = dgsCreateEdit(x*87, y*153, x*226, y*33, "", false, register_tab)
 dgsEditSetMaxLength(pw2_edit_reg, 25)
 dgsEditSetMasked(pw2_edit_reg, true)
--------------------------------------------------------------------------------Funciones-------------------------------------------------------------------------------
+
+--Main events
 addEventHandler("onDgsMouseClick", dgsRoot,
 	function(_, state)
 		if state == "down" then
-			if (source == turnreg) then changeVisibility("register")
-			elseif (source == turnlog) then changeVisibility("login")
+			if (source == turnreg) then changeVisibility("openRegisterPanel")
+			elseif (source == turnlog) then changeVisibility("openLoginPanel")
 			elseif (source == gologin) or (source == goregister) then
 				local user, pw, pw2 = getText(source)
 				if isOK(user, pw, pw2) then
@@ -77,13 +78,12 @@ addEventHandler("onDgsMouseClick", dgsRoot,
 )
 
 addEvent("[SZLogin]:openClose", true)
-addEventHandler("[SZLogin]:openClose", localPlayer,
+addEventHandler("[SZLogin]:openClose", getLocalPlayer(),
 	function(whatDo)
-		if whatDo == "show" then
+		if whatDo == "openLoginPanel" then
 			dgsSetVisible(login_panel, true)
 			showCursor(true)
-			fancy()
-		elseif whatDo == "close" then
+		elseif whatDo == "closeLoginRegisterPanels" then
 			dgsSetVisible(login_panel, false)
 			dgsSetVisible(register_panel, false)
 			showCursor(false)
@@ -91,6 +91,7 @@ addEventHandler("[SZLogin]:openClose", localPlayer,
 	end
 )
 
+--Main functions
 function getText(source)
 	local user, pw, pw2
 	if (source == gologin) then
@@ -105,10 +106,10 @@ function getText(source)
 end
 
 function changeVisibility(whatDo)
-	if whatDo == "login" then
+	if whatDo == "openLoginPanel" then
 		dgsSetVisible(register_panel, false)
 		dgsSetVisible(login_panel, true)
-	elseif whatDo == "register" then
+	elseif whatDo == "openRegisterPanel" then
 		dgsSetVisible(login_panel, false)
 		dgsSetVisible(register_panel, true)
 	end
@@ -123,58 +124,61 @@ function isOK(user, pw, pw2)
 	end
 end
 
-function fancy()
-	local font = {
-		[1] = dxCreateFont("font/medium.ttf", 10),
-		[2] = dxCreateFont("font/medium.ttf", 14)
-	}
-	
-	local elementsWithFont1 = {
-		[1] = login_panel,
-		[2] = register_panel,
-		[3] = user_login,
-		[4] = pw_login,
-		[5] = user_register,
-		[6] = pw_register,
-		[7] = pw2_register,
-		[8] = pw2nd_register,
-		[9] = max_login,
-		[10] = max2_login,
-		[11] = max_register,
-		[12] = max2_register,
-		[13] = max3_register,
-		[14] = user_edit_login,
-		[15] = pw_edit_login,
-		[16] = user_edit_reg,
-		[17] = pw_edit_reg,
-		[18] = pw2_edit_reg
-	}
-	for _, v in pairs(elementsWithFont1) do dgsSetFont(v, font[1]) end
+--Misc
+addEventHandler("onClientResourceStart", getRootElement(), 
+	function()
+		local font = {
+			[1] = dxCreateFont("font/medium.ttf", 10),
+			[2] = dxCreateFont("font/medium.ttf", 14)
+		}
+		
+		local elementsWithFont1 = {
+			[1] = login_panel,
+			[2] = register_panel,
+			[3] = user_login,
+			[4] = pw_login,
+			[5] = user_register,
+			[6] = pw_register,
+			[7] = pw2_register,
+			[8] = pw2nd_register,
+			[9] = max_login,
+			[10] = max2_login,
+			[11] = max_register,
+			[12] = max2_register,
+			[13] = max3_register,
+			[14] = user_edit_login,
+			[15] = pw_edit_login,
+			[16] = user_edit_reg,
+			[17] = pw_edit_reg,
+			[18] = pw2_edit_reg
+		}
+		for _, v in pairs(elementsWithFont1) do dgsSetFont(v, font[1]) end
 
-	local white_labels = {
-		[1] = user_login,
-		[2] = pw_login,
-		[3] = user_register,
-		[4] = pw_register,
-		[5] = pw2_register,
-		[6] = pw2nd_register
-	}
-	for _, v in pairs(white_labels) do dgsLabelSetColor(v, 255, 255, 255) end
-	
-	local red_labels = {
-		[1] = max_login,
-		[2] = max2_login,
-		[3] = max_register,
-		[4] = max2_register,
-		[5] = max3_register
-	}
-	for _, v in pairs(red_labels) do dgsLabelSetColor(v, 255, 0, 0) end
+		local white_labels = {
+			[1] = user_login,
+			[2] = pw_login,
+			[3] = user_register,
+			[4] = pw_register,
+			[5] = pw2_register,
+			[6] = pw2nd_register
+		}
+		for _, v in pairs(white_labels) do dgsLabelSetColor(v, 255, 255, 255) end
+		
+		local red_labels = {
+			[1] = max_login,
+			[2] = max2_login,
+			[3] = max_register,
+			[4] = max2_register,
+			[5] = max3_register
+		}
+		for _, v in pairs(red_labels) do dgsLabelSetColor(v, 255, 0, 0) end
 
-	local buttons = {
-		[1] = gologin,
-		[2] = turnreg,
-		[3] = goregister,
-		[4] = turnlog
-	}
-	for _, v in pairs(buttons) do dgsSetFont(v, font[2]) end
-end
+		local buttons = {
+			[1] = gologin,
+			[2] = turnreg,
+			[3] = goregister,
+			[4] = turnlog
+		}
+		for _, v in pairs(buttons) do dgsSetFont(v, font[2]) end
+	end
+)

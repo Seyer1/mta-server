@@ -71,9 +71,9 @@ local admin_bank_platinum = dgsCreateRadioButton(x*300, y*210, x*100, y*15, " Ac
 local admin_bank_amountDep = dgsCreateEdit(x*135, y*240, x*200, y*20, "", false, admin_bank_tab)
 local admin_bank_amountExt = dgsCreateEdit(x*135, y*310, x*200, y*20, "", false, admin_bank_tab)
 
-bindKey("o", "down", function() 
-	fancy() triggerServerEvent("[SZAdmin]:checkStaff", getLocalPlayer(), getLocalPlayer()) end)
+bindKey("o", "down", function() triggerServerEvent("[SZAdmin]:checkStaff", getLocalPlayer(), getLocalPlayer()) end)
 
+--Main events
 addEventHandler("onDgsMouseClick", dgsRoot,
 	function(_, state)
 		local item = dgsGridListGetSelectedItem(admin_user_list)
@@ -100,10 +100,10 @@ addEventHandler("onDgsMouseClick", dgsRoot,
 
 addEvent("[SZAdmin]:showInfo", true)
 addEventHandler("[SZAdmin]:showInfo", getLocalPlayer(),
-	function(u, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner, vehName, vehHp, vehModel, checkBank, cardDep, cardNum, cardLvl)
+	function(user, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner, vehName, vehHp, vehModel, checkBank, cardDep, cardNum, cardLvl)
 		---[Main]---
 		dgsSetText(admin_user_nick, "Nick: "..nick)
-		dgsSetText(admin_user_acc, "Account: "..u)
+		dgsSetText(admin_user_acc, "Account: "..user)
 		dgsSetText(admin_user_ip, "IP: "..tostring(ip))
 		dgsSetText(admin_user_serial, "Serial: "..serial)
 		dgsSetText(admin_player_hp, "Health: "..hp)
@@ -119,7 +119,7 @@ addEventHandler("[SZAdmin]:showInfo", getLocalPlayer(),
 		dgsSetText(admin_playerveh_owner, "Owner: "..vehOwner)
 		---[Bank]---
 		dgsSetText(admin_bank_nick, "Nick: "..nick)
-		dgsSetText(admin_bank_acc, "Account: "..u)
+		dgsSetText(admin_bank_acc, "Account: "..user)
 		dgsSetText(admin_bank_ip, "IP: "..tostring(ip))
 		dgsSetText(admin_bank_serial, "Serial: "..serial)
 		dgsSetText(admin_playerBank_has, "¿Tiene tarjeta?: "..checkBank)
@@ -150,11 +150,11 @@ addEventHandler("[SZAdmin]:abrir", getLocalPlayer(),
 
 addEvent("[SZAdmin]:refreshTar", true)
 addEventHandler("[SZAdmin]:refreshTar", getLocalPlayer(),
-	function(checkT, checkD, checkLvl, checkN)
-		dgsSetText(admin_playerBank_has, "¿Tiene tarjeta?: "..checkT)
-		dgsSetText(admin_playerBank_lvl, "Tipo de tarjeta: "..checkLvl)
-		dgsSetText(admin_playerBank_num, "Numero: "..checkN)
-		dgsSetText(admin_playerBank_dep, "Depositado: "..checkD)
+	function(hasCard, cardDep, cardLvl, cardNumber)
+		dgsSetText(admin_playerBank_has, "¿Tiene tarjeta?: "..hasCard)
+		dgsSetText(admin_playerBank_lvl, "Tipo de tarjeta: "..cardLvl)
+		dgsSetText(admin_playerBank_num, "Numero: "..cardNumber)
+		dgsSetText(admin_playerBank_dep, "Depositado: "..cardDep)
 	end
 )
 
@@ -196,43 +196,6 @@ addEventHandler("onClientPlayerQuit", root,
 	end
 )
 
-function refresh() 
-	dgsGridListClear(admin_user_list)
-    for _, v in pairs(getElementsByType("player")) do
-        local row = dgsGridListAddRow(admin_user_list)
-        dgsGridListSetItemText(admin_user_list, row, admin_users_list_show, getPlayerName(v))
-        dgsGridListSetItemData(admin_user_list, row, admin_users_list_show, v)
-    end
-end
-
-function changeVisibility(whatDo)
-	if whatDo == "dep" then
-		dgsSetVisible(admin_bank_add, true)
-		dgsSetVisible(admin_bank_ext, true)
-		dgsSetVisible(admin_bank_amountDep, true)
-		dgsSetVisible(admin_bank_amountExt, true)
-		dgsSetVisible(admin_bank_normal, false)
-		dgsSetVisible(admin_bank_gold, false)
-		dgsSetVisible(admin_bank_platinum, false)
-	elseif whatDo == "lvl" then
-		dgsSetVisible(admin_bank_add, false)
-		dgsSetVisible(admin_bank_ext, false)
-		dgsSetVisible(admin_bank_amountDep, false)
-		dgsSetVisible(admin_bank_amountExt, false)
-		dgsSetVisible(admin_bank_normal, true)
-		dgsSetVisible(admin_bank_gold, true)
-		dgsSetVisible(admin_bank_platinum, true)
-	elseif whatDo == "giftdel" then
-		dgsSetVisible(admin_bank_add, false)
-		dgsSetVisible(admin_bank_ext, false)
-		dgsSetVisible(admin_bank_amountDep, false)
-		dgsSetVisible(admin_bank_amountExt, false)
-		dgsSetVisible(admin_bank_normal, false)
-		dgsSetVisible(admin_bank_gold, false)
-		dgsSetVisible(admin_bank_platinum, false)
-	end
-end
-
 function activate(hasCard)
 	dgsSetEnabled(admin_playerBank_gogiftremove, true)
 	if hasCard == "No" then
@@ -248,6 +211,44 @@ end
 addEvent("[SZAdmin]:AdmininstrateCard", true)
 addEventHandler("[SZAdmin]:AdmininstrateCard", getLocalPlayer(), activate)
 
+--Main functions
+function refresh() 
+	dgsGridListClear(admin_user_list)
+    for _, v in pairs(getElementsByType("player")) do
+        local row = dgsGridListAddRow(admin_user_list)
+        dgsGridListSetItemText(admin_user_list, row, admin_users_list_show, getPlayerName(v))
+        dgsGridListSetItemData(admin_user_list, row, admin_users_list_show, v)
+    end
+end
+
+function hide()
+	dgsSetVisible(admin_bank_add, false)
+	dgsSetVisible(admin_bank_ext, false)
+	dgsSetVisible(admin_bank_amountDep, false)
+	dgsSetVisible(admin_bank_amountExt, false)
+	dgsSetVisible(admin_bank_normal, false)
+	dgsSetVisible(admin_bank_gold, false)
+	dgsSetVisible(admin_bank_platinum, false)
+	dgsSetVisible(admin_playerBank_changeDep, false)
+	dgsSetVisible(admin_playerBank_changeLvl, false)
+end
+
+function changeVisibility(whatDo)
+	hide()
+	if whatDo == "dep" then
+		dgsSetVisible(admin_bank_add, true)
+		dgsSetVisible(admin_bank_ext, true)
+		dgsSetVisible(admin_bank_amountDep, true)
+		dgsSetVisible(admin_bank_amountExt, true)
+		dgsSetVisible(admin_playerBank_changeDep, true)
+	elseif whatDo == "lvl" then
+		dgsSetVisible(admin_bank_normal, true)
+		dgsSetVisible(admin_bank_gold, true)
+		dgsSetVisible(admin_bank_platinum, true)
+		dgsSetVisible(admin_playerBank_changeLvl, true)
+	end
+end
+
 function changeBankDep(data, staffName)
 	local amount, whatDo
 	if dgsRadioButtonGetSelected(admin_bank_add) or dgsRadioButtonGetSelected(admin_bank_ext) then
@@ -260,7 +261,7 @@ function changeBankDep(data, staffName)
 		end
 		if amount ~= "" then
 			if tonumber(amount) then
-				if tonumber(amount) >= 1 then triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, amount, whatDo, "")
+				if tonumber(amount) >= 0 then triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, amount, whatDo, "")
 				else exports.SZMisc:_msgcl("gral", "err", "cant")
 				end
 			else exports.SZMisc:_msgcl("gral", "err", "nro")
@@ -339,10 +340,10 @@ function close()
 	dgsSetVisible(admin_playerBank_changeLvl, false)
 end
 
-function fancy()
-	if dgsGetFont(admin_user_acc) == "default" then
+--Misc
+addEventHandler("onClientResourceStart", getRootElement(), 
+	function()
 		local font = dxCreateFont("font/medium.ttf", 10)
-		
 		local elements = {
 			[1] = admin_panel,
 			[2] = admin_users_list,
@@ -403,4 +404,4 @@ function fancy()
 		}
 		for _, v in pairs(especial_labels) do dgsLabelSetColor(v, 255, 0, 0) end
 	end
-end
+)
