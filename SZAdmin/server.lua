@@ -29,7 +29,7 @@ addEventHandler("[SZAdmin]:bankAdmin", getRootElement(),
 		end
 
 		if whatDo == "dep" or whatDo == "ext" then reason = bankDepExt(data, staffName, amount, whatDo, target, deposited)
-		elseif whatDo == "givedel" then reason = bankGiveDel(data, staffName, staffacc, target, ip, serial, date)
+		elseif whatDo == "givedel" then reason = bankGiveDel(data, staffName, staff, target, ip, serial, date)
 		elseif whatDo == "changelvl" then
 			if lvl ~= actualLvl then reason = bankChangeLvl(data, staffName, target, check.Lvl, lvl)
 			else exports.SZMisc:_msgsv("admin", "err", "bankalreadythatlvl", source)
