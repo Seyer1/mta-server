@@ -3,5 +3,4 @@
 	<script src="[SZTab]/teams.lua" type="server" />
 	<script src="[SZPolice]/puerta.lua" type="server"/>
     <map src="[SZPolice]/police.map" dimension="0"></map>
-	<export function="_setTeam" type="server" />
 </meta>

@@ -53,10 +53,10 @@ local admin_bank_acc = dgsCreateLabel(x*25, y*65, x*100, y*15, "Account: N/A", f
 local admin_bank_ip = dgsCreateLabel(x*25, y*85, x*200, y*15, "IP: N/A", false, admin_bank_tab)
 local admin_bank_serial = dgsCreateLabel(x*25, y*105, x*300, y*35, "Serial: N/A", false, admin_bank_tab)
 local admin_playerBank_data = dgsCreateLabel(x*325, y*20, x*100, y*15, "Bank:", false, admin_bank_tab)
-local admin_playerBank_has = dgsCreateLabel(x*335, y*45, x*300, y*35, "¿Tiene tarjeta?: N/A", false, admin_bank_tab)
-local admin_playerBank_lvl = dgsCreateLabel(x*335, y*65, x*300, y*35, "Tipo de tarjeta: N/A", false, admin_bank_tab)
-local admin_playerBank_num = dgsCreateLabel(x*335, y*85, x*300, y*35, "Número: N/A", false, admin_bank_tab)
-local admin_playerBank_dep = dgsCreateLabel(x*335, y*105, x*300, y*35, "Depositado: N/A", false, admin_bank_tab)
+local admin_playerBank_has = dgsCreateLabel(x*335, y*45, x*305, y*35, "¿Tiene tarjeta?: N/A", false, admin_bank_tab)
+local admin_playerBank_lvl = dgsCreateLabel(x*335, y*65, x*305, y*35, "Tipo de tarjeta: N/A", false, admin_bank_tab)
+local admin_playerBank_num = dgsCreateLabel(x*335, y*85, x*305, y*35, "Número: N/A", false, admin_bank_tab)
+local admin_playerBank_dep = dgsCreateLabel(x*335, y*105, x*305, y*35, "Depositado: N/A", false, admin_bank_tab)
 
 local admin_playerBank_gochangedep = dgsCreateButton(x*70, y*170, x*100, y*20, "Modificar depósito", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
 local admin_playerBank_gochangelvl = dgsCreateButton(x*185, y*170, x*100, y*20, "Modificar lvl", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
@@ -104,7 +104,7 @@ addEventHandler("[SZAdmin]:showInfo", getLocalPlayer(),
 		---[Main]---
 		dgsSetText(admin_user_nick, "Nick: "..nick)
 		dgsSetText(admin_user_acc, "Account: "..user)
-		dgsSetText(admin_user_ip, "IP: "..tostring(ip))
+		dgsSetText(admin_user_ip, "IP: "..ip)
 		dgsSetText(admin_user_serial, "Serial: "..serial)
 		dgsSetText(admin_player_hp, "Health: "..hp)
 		dgsSetText(admin_player_armor, "Armor: "..armor)
@@ -120,7 +120,7 @@ addEventHandler("[SZAdmin]:showInfo", getLocalPlayer(),
 		---[Bank]---
 		dgsSetText(admin_bank_nick, "Nick: "..nick)
 		dgsSetText(admin_bank_acc, "Account: "..user)
-		dgsSetText(admin_bank_ip, "IP: "..tostring(ip))
+		dgsSetText(admin_bank_ip, "IP: "..ip)
 		dgsSetText(admin_bank_serial, "Serial: "..serial)
 		dgsSetText(admin_playerBank_has, "¿Tiene tarjeta?: "..checkBank)
 		dgsSetText(admin_playerBank_lvl, "Tipo de tarjeta: "..cardLvl)
@@ -159,11 +159,7 @@ addEventHandler("[SZAdmin]:refreshTar", getLocalPlayer(),
 )
 
 addEvent("[SZAdmin]:refreshDep", true)
-addEventHandler("[SZAdmin]:refreshDep", getLocalPlayer(), 
-	function(new)
-		dgsSetText(admin_playerBank_dep, "Depositado: "..new)
-	end
-)
+addEventHandler("[SZAdmin]:refreshDep", getLocalPlayer(), function(new) dgsSetText(admin_playerBank_dep, "Depositado: "..new) end)
 
 addEvent("[SZAdmin]:refreshLvl", true)
 addEventHandler("[SZAdmin]:refreshLvl", getLocalPlayer(),

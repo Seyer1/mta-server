@@ -55,7 +55,7 @@ end
 
 function _msgsvstaff(modo, staffName, cant, lvl, thePlayer)
     local sv = "#FFFF00[Server]  "
-    if modo == "bankdep" then outputChatBox(sv.. "El staff "..staffName.." te agregó $"..cant.." de tu cuenta bancaria.", thePlayer, 255, 255, 255, true)
+    if modo == "bankdep" then outputChatBox(sv.. "El staff "..staffName.." te agregó $"..cant.." a tu cuenta bancaria.", thePlayer, 255, 255, 255, true)
     elseif modo == "bankext" then outputChatBox(sv.. "El staff "..staffName.." te quitó $"..cant.." de tu cuenta bancaria.", thePlayer, 255, 255, 255, true)
     elseif modo == "bankdelCard" then outputChatBox(sv.. "El staff "..staffName.." eliminó tu tarjeta.", thePlayer, 255, 255, 255, true)
     elseif modo == "bankgiveCard" then outputChatBox(sv.. "El staff "..staffName.." te regaló una tarjeta.", thePlayer, 255, 255, 255, true)

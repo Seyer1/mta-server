@@ -55,7 +55,7 @@ local amountTextExt = dgsCreateLabel(x*10, y*30, x*261, y*22, "Dinero depositado
 local extText = dgsCreateLabel(x*74, y*65, x*143, y*17, "¿Cuánto querés extraer?", false, bank_ext_tab)
 local amountTextDep = dgsCreateLabel(x*10, y*30, x*261, y*22, "Dinero depositado: $0", false, bank_dep_tab)
 local depText = dgsCreateLabel(x*72, y*65, x*143, y*17, "¿Cuánto querés depositar?", false, bank_dep_tab)
-local closeMain = dgsCreateLabel(x*400, y*30, x*143, y*17, "X", false, bank_main_tab), dgsCreateLabel(x*-17, y*30, x*143, y*17, " ", false, bank_ext_tab), dgsCreateLabel(x*685, y*30, x*143, y*17, " ", false, bank_dep_tab)
+local closeMain = dgsCreateLabel(x*400, y*30, x*145, y*19, "X", false, bank_main_tab), dgsCreateLabel(x*-17, y*30, x*145, y*19, " ", false, bank_ext_tab), dgsCreateLabel(x*685, y*30, x*145, y*19, " ", false, bank_dep_tab)
 local closeExt = dgsCreateLabel(x*270, y*30, x*143, y*17, "X", false, bank_ext_tab)
 local closeDep = dgsCreateLabel(x*270, y*30, x*143, y*17, "X", false, bank_dep_tab)
 
