@@ -13,14 +13,10 @@ local admin_users_list_show = dgsGridListAddColumn(admin_user_list, "Players", 0
 dgsGridListSetSortEnabled(admin_user_list, false)
 
 local admin_main_tab = dgsCreateTabPanel(x*210, y*5, x*470, y*420, false, admin_panel)-- x*20 => x*0 
-
-local admin_players_tab = dgsCreateTab(" Players ", admin_main_tab)
-local admin_bank_tab = dgsCreateTab(" Bank ", admin_main_tab)
-local admin_options_tab = dgsCreateTab(" Options ", admin_main_tab)
-
 local admin_refresh = dgsCreateButton(x*5, y*394, x*200, y*30, "Refresh", false, admin_panel, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
 
 -- #Players
+local admin_players_tab = dgsCreateTab(" Players ", admin_main_tab)
 local admin_user_data = dgsCreateLabel(x*15, y*20, x*100, y*15, "Player:", false, admin_players_tab)
 local admin_user_nick = dgsCreateLabel(x*25, y*45, x*100, y*15, "Nick: N/A", false, admin_players_tab)
 local admin_user_acc = dgsCreateLabel(x*25, y*65, x*100, y*15, "Account: N/A", false, admin_players_tab)
@@ -47,6 +43,7 @@ local admin_goban = dgsCreateButton(x*360, y*70, x*100, y*20, "Ban", false, admi
 dgsSetEnabled(admin_goban, false)
 
 -- #Bank
+local admin_bank_tab = dgsCreateTab(" Bank ", admin_main_tab)
 local admin_bank_data = dgsCreateLabel(x*15, y*20, x*100, y*15, "Player:", false, admin_bank_tab)
 local admin_bank_nick = dgsCreateLabel(x*25, y*45, x*100, y*15, "Nick: N/A", false, admin_bank_tab)
 local admin_bank_acc = dgsCreateLabel(x*25, y*65, x*100, y*15, "Account: N/A", false, admin_bank_tab)
@@ -58,18 +55,35 @@ local admin_playerBank_lvl = dgsCreateLabel(x*335, y*65, x*305, y*35, "Tipo de t
 local admin_playerBank_num = dgsCreateLabel(x*335, y*85, x*305, y*35, "Número: N/A", false, admin_bank_tab)
 local admin_playerBank_dep = dgsCreateLabel(x*335, y*105, x*305, y*35, "Depositado: N/A", false, admin_bank_tab)
 
-local admin_playerBank_gochangedep = dgsCreateButton(x*70, y*170, x*100, y*20, "Modificar depósito", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
-local admin_playerBank_gochangelvl = dgsCreateButton(x*185, y*170, x*100, y*20, "Modificar lvl", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
-local admin_playerBank_gogiftremove = dgsCreateButton(x*300, y*170, x*100, y*20, "Regalar/Eliminar tarjeta", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
-local admin_playerBank_changeDep = dgsCreateButton(x*185, y*350, x*100, y*20, "Actualizar", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
-local admin_playerBank_changeLvl = dgsCreateButton(x*185, y*250, x*100, y*20, "Actualizar", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
+local admin_playerBank_gochangedep = dgsCreateButton(x*133, y*170, x*100, y*20, "Modificar depósito", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
 local admin_bank_add = dgsCreateRadioButton(x*185, y*210, x*100, y*15, " Agregar a su depósito", false, admin_bank_tab, tocolor(251, 55, 0, 255), _, _, _, _)
 local admin_bank_ext = dgsCreateRadioButton(x*185, y*280, x*100, y*15, " Quitarle a su depósito", false, admin_bank_tab, tocolor(251, 55, 0, 255), _, _, _, _)
+local admin_playerBank_changeDep = dgsCreateButton(x*185, y*350, x*100, y*20, "Actualizar", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
+local admin_bank_amountDep = dgsCreateEdit(x*135, y*240, x*200, y*20, "", false, admin_bank_tab)
+local admin_bank_amountExt = dgsCreateEdit(x*135, y*310, x*200, y*20, "", false, admin_bank_tab)
+
+local admin_playerBank_gochangelvl = dgsCreateButton(x*238, y*170, x*100, y*20, "Modificar lvl", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
 local admin_bank_normal = dgsCreateRadioButton(x*70, y*210, x*100, y*15, " Actualizar a normal", false, admin_bank_tab, tocolor(251, 55, 0, 255), _, _, _, _)
 local admin_bank_gold = dgsCreateRadioButton(x*190, y*210, x*100, y*15, " Actualizar a gold", false, admin_bank_tab, tocolor(251, 55, 0, 255), _, _, _, _)
 local admin_bank_platinum = dgsCreateRadioButton(x*300, y*210, x*100, y*15, " Actualizar a platinum", false, admin_bank_tab, tocolor(251, 55, 0, 255), _, _, _, _)
-local admin_bank_amountDep = dgsCreateEdit(x*135, y*240, x*200, y*20, "", false, admin_bank_tab)
-local admin_bank_amountExt = dgsCreateEdit(x*135, y*310, x*200, y*20, "", false, admin_bank_tab)
+local admin_playerBank_changeLvl = dgsCreateButton(x*185, y*250, x*100, y*20, "Actualizar", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
+
+local admin_playerBank_golog = dgsCreateButton(x*28, y*170, x*100, y*20, "Ver registros", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
+local admin_bankRegister_list = dgsCreateGridList(x*5, y*200, x*460, y*200, false, admin_bank_tab)
+local admin_bankRegister_list_reason = dgsGridListAddColumn(admin_bankRegister_list, "Reason", 0.12)
+local admin_bankRegister_list_lastDep = dgsGridListAddColumn(admin_bankRegister_list, "Last Deposited", 0.15)
+local admin_bankRegister_list_amount = dgsGridListAddColumn(admin_bankRegister_list, "Amount", 0.13)
+local admin_bankRegister_list_newDep = dgsGridListAddColumn(admin_bankRegister_list, "New Deposited", 0.15)
+local admin_bankRegister_list_date = dgsGridListAddColumn(admin_bankRegister_list, "Date", 0.19)
+local admin_bankRegister_list_ip = dgsGridListAddColumn(admin_bankRegister_list, "IP", 0.13)
+local admin_bankRegister_list_serial = dgsGridListAddColumn(admin_bankRegister_list, "Serial", 0.38)
+local admin_bankRegister_list_oldLvl = dgsGridListAddColumn(admin_bankRegister_list, "OldLvl", 0.13)
+local admin_bankRegister_list_newLvl = dgsGridListAddColumn(admin_bankRegister_list, "NewLvl", 0.13)
+local admin_bankRegister_list_staff = dgsGridListAddColumn(admin_bankRegister_list, "byStaff", 0.38)
+dgsGridListSetSortEnabled(admin_bankRegister_list, false)
+
+local admin_playerBank_gogiftremove = dgsCreateButton(x*343, y*170, x*100, y*20, "Regalar/Eliminar tarjeta", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
+local admin_options_tab = dgsCreateTab(" Options ", admin_main_tab)
 
 bindKey("o", "down", function() triggerServerEvent("[SZAdmin]:checkStaff", getLocalPlayer(), getLocalPlayer()) end)
 
@@ -85,8 +99,11 @@ addEventHandler("onDgsMouseClick", dgsRoot,
 				elseif source == admin_playerBank_gochangedep then changeVisibility("dep")
 				elseif source == admin_playerBank_gochangelvl then changeVisibility("lvl")
 				elseif source == admin_playerBank_gogiftremove then 
-					changeVisibility("giftdel")
+					hide()
 					triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, 0, "givedel", "")
+				elseif source == admin_playerBank_golog then 
+					changeVisibility("log")
+					triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, 0, "seelog", "")
 				elseif source == admin_playerBank_changeDep then changeBankDep(data, staffName)
 				elseif source == admin_playerBank_changeLvl then changeCardLvl(data, staffName)
 				elseif source == admin_user_serial or source == admin_bank_serial then copySerial()
@@ -175,6 +192,36 @@ addEventHandler("[SZAdmin]:refreshLvl", getLocalPlayer(),
 	end
 )
 
+addEvent("[SZAdmin]:refreshLog", true)
+addEventHandler("[SZAdmin]:refreshLog", getLocalPlayer(),
+	function(log)
+		local r, g, b
+		local elements = {
+			[1] = admin_bankRegister_list_reason,
+			[2] = admin_bankRegister_list_lastDep,
+			[3] = admin_bankRegister_list_amount,
+			[4] = admin_bankRegister_list_newDep,
+			[5] = admin_bankRegister_list_date,
+			[6] = admin_bankRegister_list_ip,
+			[7] = admin_bankRegister_list_serial,
+			[8] = admin_bankRegister_list_oldLvl,
+			[9] = admin_bankRegister_list_newLvl,
+			[10] = admin_bankRegister_list_staff
+		}
+
+		for i, v in ipairs(log) do
+			local reason = log[i].Reason
+			local row = dgsGridListAddRow(admin_bankRegister_list, _, reason, "$"..log[i].LastDeposited, log[i].Amount, "$"..log[i].NewDeposited, log[i].Date, log[i].IP, log[i].Serial, log[i].OldLvl, log[i].NewLvl, log[i].Staff)
+			if reason == "[Extraction]" then r, g, b = 204, 0, 0
+			elseif reason == "[Deposited]" then r, g, b = 0, 204, 0
+			else r, g, b = 204, 204, 0
+			end
+
+			for _, v in ipairs(elements) do dgsGridListSetItemColor(admin_bankRegister_list, row, v, tocolor(r,g,b)) end
+		end
+	end
+)
+
 addEventHandler("onClientPlayerJoin", root,
 	function()
 		local row = dgsGridListAddRow(admin_user_list)
@@ -193,6 +240,7 @@ addEventHandler("onClientPlayerQuit", root,
 )
 
 function activate(hasCard)
+	dgsSetEnabled(admin_playerBank_golog, true)
 	dgsSetEnabled(admin_playerBank_gogiftremove, true)
 	if hasCard == "No" then
 		dgsSetEnabled(admin_playerBank_gochangedep, false)
@@ -227,6 +275,8 @@ function hide()
 	dgsSetVisible(admin_bank_platinum, false)
 	dgsSetVisible(admin_playerBank_changeDep, false)
 	dgsSetVisible(admin_playerBank_changeLvl, false)
+	dgsSetVisible(admin_bankRegister_list, false)
+	dgsGridListClear(admin_bankRegister_list)
 end
 
 function changeVisibility(whatDo)
@@ -242,6 +292,8 @@ function changeVisibility(whatDo)
 		dgsSetVisible(admin_bank_gold, true)
 		dgsSetVisible(admin_bank_platinum, true)
 		dgsSetVisible(admin_playerBank_changeLvl, true)
+	elseif whatDo == "log" then
+		dgsSetVisible(admin_bankRegister_list, true)
 	end
 end
 
@@ -278,7 +330,6 @@ function changeCardLvl(data, staffName)
 		triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, 0, "changelvl", lvl)
 	else exports.SZMisc:_msgcl("gral", "err", "func")
 	end
-
 end
 
 function copySerial()
@@ -322,18 +373,11 @@ function close()
 	dgsSetText(admin_playerBank_gogiftremove, "Regalar/Eliminar tarjeta")
 	dgsSetEnabled(admin_goreconnect, false)
 	dgsSetEnabled(admin_goban, false)
+	dgsSetEnabled(admin_playerBank_golog, false)
 	dgsSetEnabled(admin_playerBank_gochangedep, false)
 	dgsSetEnabled(admin_playerBank_gochangelvl, false)
 	dgsSetEnabled(admin_playerBank_gogiftremove, false)
-	dgsSetVisible(admin_bank_add, false)
-	dgsSetVisible(admin_bank_ext, false)
-	dgsSetVisible(admin_bank_normal, false)
-	dgsSetVisible(admin_bank_gold, false)
-	dgsSetVisible(admin_bank_platinum, false)
-	dgsSetVisible(admin_bank_amountDep, false)
-	dgsSetVisible(admin_bank_amountExt, false)
-	dgsSetVisible(admin_playerBank_changeDep, false)
-	dgsSetVisible(admin_playerBank_changeLvl, false)
+	hide()
 end
 
 --Misc
@@ -367,27 +411,28 @@ addEventHandler("onClientResourceStart", getRootElement(),
 			[24] = admin_playerveh_id,
 			[25] = admin_playerveh_owner,
 			[26] = admin_bank_tab,
-			[27] = admin_playerBank_gochangedep,
-			[28] = admin_playerBank_gochangelvl,
-			[29] = admin_playerBank_gogiftremove,
-			[30] = admin_playerBank_changeDep,
-			[31] = admin_playerBank_changeLvl,
-			[32] = admin_bank_add,
-			[33] = admin_bank_ext,
-			[34] = admin_bank_normal,
-			[35] = admin_bank_gold,
-			[36] = admin_bank_platinum,
-			[37] = admin_bank_data,
-			[38] = admin_bank_nick,
-			[39] = admin_bank_acc,
-			[40] = admin_bank_ip,
-			[41] = admin_bank_serial,
-			[42] = admin_playerBank_data,
-			[43] = admin_playerBank_has,
-			[44] = admin_playerBank_lvl,
-			[45] = admin_playerBank_num,
-			[46] = admin_playerBank_dep,
-			[47] = admin_options_tab
+			[27] = admin_playerBank_golog,
+			[28] = admin_playerBank_gochangedep,
+			[29] = admin_playerBank_gochangelvl,
+			[30] = admin_playerBank_gogiftremove,
+			[31] = admin_playerBank_changeDep,
+			[32] = admin_playerBank_changeLvl,
+			[33] = admin_bank_add,
+			[34] = admin_bank_ext,
+			[35] = admin_bank_normal,
+			[36] = admin_bank_gold,
+			[37] = admin_bank_platinum,
+			[38] = admin_bank_data,
+			[39] = admin_bank_nick,
+			[40] = admin_bank_acc,
+			[41] = admin_bank_ip,
+			[42] = admin_bank_serial,
+			[43] = admin_playerBank_data,
+			[44] = admin_playerBank_has,
+			[45] = admin_playerBank_lvl,
+			[46] = admin_playerBank_num,
+			[47] = admin_playerBank_dep,
+			[48] = admin_options_tab
 		}
 		for _, v in pairs(elements) do dgsSetFont(v, font) end
 

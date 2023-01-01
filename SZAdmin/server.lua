@@ -18,8 +18,8 @@ addEventHandler("[SZAdmin]:getInfo", root,
 addEvent("[SZAdmin]:bankAdmin", true)
 addEventHandler("[SZAdmin]:bankAdmin", getRootElement(), 
 	function(data, staffName, amount, whatDo, lvl)
-		local target, targetName, _, _ = exports.SZMisc:_get("user", "getSomePlayerInfo", data)
-		local staff, staffName, _, _ = exports.SZMisc:_get("user", "getSomePlayerInfo", source)
+		local target, targetName, targetIP, targetSerial = exports.SZMisc:_get("user", "getSomePlayerInfo", data)
+		local staff, staffName, staffIP, staffSerial = exports.SZMisc:_get("user", "getSomePlayerInfo", source)
 		local check = exports.SZSQL:_QuerySingle("SELECT * FROM bank WHERE User = ?", target)
 		local date = exports.SZMisc:_fecha()
 		local reason, deposited, actualLvl
@@ -29,20 +29,19 @@ addEventHandler("[SZAdmin]:bankAdmin", getRootElement(),
 		end
 
 		if whatDo == "dep" or whatDo == "ext" then reason = bankDepExt(data, staffName, amount, whatDo, target, deposited)
-		elseif whatDo == "givedel" then reason = bankGiveDel(data, staffName, staff, target, ip, serial, date)
+		elseif whatDo == "givedel" then reason = bankGiveDel(data, staffName, staff, target, targetIP, targetSerial, date)
 		elseif whatDo == "changelvl" then
-			if lvl ~= actualLvl then reason = bankChangeLvl(data, staffName, target, check.Lvl, lvl)
+			if lvl ~= actualLvl then reason = bankChangeLvl(data, staffName, target, actualLvl, lvl)
 			else exports.SZMisc:_msgsv("admin", "err", "bankalreadythatlvl", source)
 			end
+		elseif whatDo == "seelog" then showReg(target)
 		end
 		
 		if reason == "[NewExt]" or reason == "[NewDep]" then
 			if reason == "[NewExt]" then amount = "-"..amount end
-			exports.SZSQL:_Exec("INSERT INTO staffbanklog(Staff, Target, LastDeposited, Amount, NewDeposited, Reason, Date) VALUES(?, ?, ?, ?, ?, ?, ?)",  staffName.." ("..staff..")", targetName.." ("..target..")", deposited, amount, amount+deposited, reason, date)
-		elseif reason == "[ChangeLvl]" then
-			exports.SZSQL:_Exec("INSERT INTO staffbanklog(Staff, Target, OldLvl, NewLvl, Reason, Date) VALUES(?, ?, ?, ?, ?, ?)",  staffName.." ("..staff..")", targetName.." ("..target..")", actualLvl, lvl, reason, date)
-		else
-			exports.SZSQL:_Exec("INSERT INTO staffbanklog(Staff, Target, Reason, Date) VALUES(?, ?, ?, ?)",  staffName.." ("..staff..")", targetName.." ("..target..")", reason, date)
+			exports.SZSQL:_Exec("INSERT INTO staffbanklog(Staff, TargetAcc, TargetName, LastDeposited, Amount, NewDeposited, Reason, Date, IP, Serial) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",  staffName.." ("..staff..")", target, targetName, deposited, amount, amount+deposited, reason, date, staffIP, staffSerial)
+		elseif reason == "[ChangeLvl]" then exports.SZSQL:_Exec("INSERT INTO staffbanklog(Staff, TargetAcc, TargetName, OldLvl, NewLvl, Reason, Date, IP, Serial) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",  staffName.." ("..staff..")", target, targetName, actualLvl, lvl, reason, date, staffIP, staffSerial)
+		elseif reason == "[DelCard]" or reason == "[GiveCard]" then exports.SZSQL:_Exec("INSERT INTO staffbanklog(Staff, TargetAcc, TargetName, Reason, Date, IP, Serial) VALUES(?, ?, ?, ?, ?, ?, ?)",  staffName.." ("..staff..")", target, targetName, reason, date, staffIP, staffSerial)
 		end
 	end
 )
@@ -102,8 +101,15 @@ end
 
 function bankChangeLvl(data, staffName, target, checkLvl, lvl)
 	exports.SZSQL:_Exec("UPDATE bank SET Lvl=? WHERE User = ?", lvl, target)
-	triggerClientEvent(source, "[SZAdmin]:refreshLvl", source, lvl)
 	exports.SZMisc:_msgsvstaff("bankchglvl", staffName, 0, lvl, data)
+	triggerClientEvent(source, "[SZAdmin]:refreshLvl", source, lvl)
 
 	return "[ChangeLvl]"
+end
+
+function showReg(target)
+	local log = exports.SZSQL:_Query("SELECT * FROM banklog WHERE User = ?", target)
+	local bankStaffRegister = exports.SZSQL:_Query("SELECT * FROM staffbanklog WHERE TargetAcc = ?", target)
+	for i, v in ipairs(bankStaffRegister) do table.insert(log, v) end
+	triggerClientEvent(source, "[SZAdmin]:refreshLog", source, log)
 end

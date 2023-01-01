@@ -69,8 +69,8 @@ addEventHandler("[SZBank]:depext", getRootElement(),
 			if newDep then
 				exports.SZSQL:_Exec("UPDATE bank SET Deposited = ?, LastMovementOn = ? WHERE Usuario = ?", newDep, date, user)
 				triggerClientEvent(thePlayer, "[SZBank]:refreshDep", thePlayer, newDep)
-				if whatDo == "bankDeposite" then reason = "[NewDep]" else reason = "[NewExt]" end
-				if reason == "[NewExt]" then amount = "-"..amount end
+				if whatDo == "bankDeposite" then reason = "[Deposited]" else reason = "[Extraction]" end
+				if reason == "[Extraction]" then amount = "-"..amount end
 				exports.SZSQL:_Exec("INSERT INTO banklog(User, Reason, LastDeposited, Amount, NewDeposited, Date, IP, Serial) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", user, reason, actualDep, amount, newDep, date, ip, serial)
 			end
 		end
