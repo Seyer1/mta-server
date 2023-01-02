@@ -75,7 +75,7 @@ local admin_bankRegister_list_lastDep = dgsGridListAddColumn(admin_bankRegister_
 local admin_bankRegister_list_amount = dgsGridListAddColumn(admin_bankRegister_list, "Amount", 0.13)
 local admin_bankRegister_list_newDep = dgsGridListAddColumn(admin_bankRegister_list, "New Deposited", 0.15)
 local admin_bankRegister_list_date = dgsGridListAddColumn(admin_bankRegister_list, "Date", 0.19)
-local admin_bankRegister_list_ip = dgsGridListAddColumn(admin_bankRegister_list, "IP", 0.13)
+local admin_bankRegister_list_ip = dgsGridListAddColumn(admin_bankRegister_list, "IP", 0.16)
 local admin_bankRegister_list_serial = dgsGridListAddColumn(admin_bankRegister_list, "Serial", 0.38)
 local admin_bankRegister_list_oldLvl = dgsGridListAddColumn(admin_bankRegister_list, "OldLvl", 0.13)
 local admin_bankRegister_list_newLvl = dgsGridListAddColumn(admin_bankRegister_list, "NewLvl", 0.13)
@@ -107,7 +107,7 @@ addEventHandler("onDgsMouseClick", dgsRoot,
 				elseif source == admin_playerBank_changeDep then changeBankDep(data, staffName)
 				elseif source == admin_playerBank_changeLvl then changeCardLvl(data, staffName)
 				elseif source == admin_user_serial or source == admin_bank_serial then copySerial()
-				elseif source == admin_user_list then go()
+				elseif source == admin_user_list then go(data)
 				end
 			end
 		else close()
@@ -159,6 +159,7 @@ addEventHandler("[SZAdmin]:abrir", getLocalPlayer(),
 			showCursor(false)
 			dgsSetVisible(admin_panel, false)
 			dgsGridListClear(admin_user_list)
+			dgsGridListClear(admin_bankRegister_list)
 			close()
 		end
 	end
@@ -210,13 +211,19 @@ addEventHandler("[SZAdmin]:refreshLog", getLocalPlayer(),
 		}
 
 		for i, v in ipairs(log) do
-			local reason = log[i].Reason
-			local row = dgsGridListAddRow(admin_bankRegister_list, _, reason, "$"..log[i].LastDeposited, log[i].Amount, "$"..log[i].NewDeposited, log[i].Date, log[i].IP, log[i].Serial, log[i].OldLvl, log[i].NewLvl, log[i].Staff)
+			local reason, lastDep, amount, newDep, date, ip, serial, oldLvl, newLvl, byStaff = log[i].Reason, "$"..log[i].LastDeposited, log[i].Amount, "$"..log[i].NewDeposited, log[i].Date, log[i].IP, log[i].Serial, log[i].OldLvl or "-", log[i].NewLvl or "-", log[i].Staff or "-"
 			if reason == "[Extraction]" then r, g, b = 204, 0, 0
 			elseif reason == "[Deposited]" then r, g, b = 0, 204, 0
 			else r, g, b = 204, 204, 0
 			end
 
+			if reason == "[ChangeLvl]" or reason == "[GiveCard]" or reason == "[DelCard]" then 
+				lastDep = "-"
+				amount = "-"
+				newDep = "-"
+			end
+
+			local row = dgsGridListAddRow(admin_bankRegister_list, _, reason, lastDep, amount, newDep, date, ip, serial, oldLvl, newLvl, byStaff)
 			for _, v in ipairs(elements) do dgsGridListSetItemColor(admin_bankRegister_list, row, v, tocolor(r,g,b)) end
 		end
 	end
@@ -258,6 +265,7 @@ addEventHandler("[SZAdmin]:AdmininstrateCard", getLocalPlayer(), activate)
 --Main functions
 function refresh() 
 	dgsGridListClear(admin_user_list)
+	dgsGridListClear(admin_bankRegister_list)
     for _, v in pairs(getElementsByType("player")) do
         local row = dgsGridListAddRow(admin_user_list)
         dgsGridListSetItemText(admin_user_list, row, admin_users_list_show, getPlayerName(v))
@@ -340,8 +348,8 @@ function copySerial()
 	end
 end
 
-function go()
-	triggerServerEvent("[SZAdmin]:getInfo", getLocalPlayer(), getLocalPlayer(), data)
+function go(data)
+	triggerServerEvent("[SZAdmin]:getInfo", getLocalPlayer(), data)
 	dgsSetEnabled(admin_goreconnect, true)
 	dgsSetEnabled(admin_goban, true)
 end 

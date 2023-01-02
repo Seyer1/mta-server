@@ -8,9 +8,11 @@ addEventHandler("[SZAdmin]:checkStaff", getRootElement(),
 )
 
 addEvent("[SZAdmin]:getInfo", true)
-addEventHandler("[SZAdmin]:getInfo", root,
+addEventHandler("[SZAdmin]:getInfo", getRootElement(),
 	function(target)
 		local user, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner, vehName, vehHp, vehModel, checkBank, cardDep, cardNum, cardLvl = exports.SZMisc:_get("admin", "load", target)
+		if armor == 0 then armor = "No" end if int == 0 then int = "Normal" end if dim == 0 then dim = "Normal" end
+		if int == 10 and dim == 1 then int = "Banco LV" dim = "Banco LV" end
 		triggerClientEvent(source, "[SZAdmin]:showInfo", source, user, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner, vehName, vehHp, vehModel, checkBank, cardDep, cardNum, cardLvl) 
 	end
 )

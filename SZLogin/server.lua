@@ -3,6 +3,7 @@ function open()
 end
 addEventHandler("onPlayerJoin", getRootElement(), open)
 addEventHandler("onPlayerLogout", getRootElement(), open)
+addEventHandler("onClientFileDownloadComplete", getRootElement(), open)
 
 addEvent("[SZLogin]:register", true)
 addEventHandler("[SZLogin]:register", getRootElement(),
