@@ -8,10 +8,23 @@ function _get(where, whatDo, thePlayer)
                 elseif whatDo == "getPlayerCard" then return true
                 elseif whatDo == "getPlayerBankDep" then return check.Deposited
                 elseif whatDo == "admin" then return check.Deposited, check.CardNumber, check.Lvl
+                elseif whatDo == "targetLog" then
+                    local bankUserLog = {}
+
+                    local checkUserLog = exports.SZSQL:_QuerySingle("SELECT * FROM banklog WHERE User = ?", user)
+                    if checkUserLog then bankUserLog = exports.SZSQL:_Query("SELECT * FROM banklog WHERE User = ?", user) end
+                    
+                    local checkStaffLog = exports.SZSQL:_QuerySingle("SELECT * FROM staffbanklog WHERE TargetAcc = ?", user)
+                    if (checkUserLog and checkStaffLog) or (checkStaffLog and not checkUserLog) then
+                        local bankStaffLog = exports.SZSQL:_Query("SELECT * FROM staffbanklog WHERE TargetAcc = ?", user)
+                        for _, v in ipairs(bankStaffLog) do table.insert(bankUserLog, v) end
+                    end
+                    
+                    return bankUserLog 
                 end
             end
         elseif where == "veh" then
-            local check = exports.SZSQL:_QuerySingle("SELECT * FROM vehicles WHERE Usuario = ?", user)
+            local check = exports.SZSQL:_Query("SELECT * FROM vehicles WHERE Usuario = ?", user)
             if check then
                 if whatDo == "getVehicle" then return true 
                 elseif whatDo == "getAllVehiclesFromPlayer" then return check.Vehicles
@@ -41,7 +54,6 @@ function _get(where, whatDo, thePlayer)
         elseif where == "admin" then
             if whatDo == "load" then
                 local vehName, vehHp, vehModel, vehOwner, cardDep, cardNum, cardLvl, team
-
                 local vehicle = getPedOccupiedVehicle(thePlayer)
                 if vehicle then 
                     vehName = getVehicleName(vehicle)
@@ -55,8 +67,9 @@ function _get(where, whatDo, thePlayer)
                     checkBank = "Sí" 
                 end
 
+                local checkLog = _get("bank", "targetLog", thePlayer)
                 if getPlayerTeam(thePlayer) then team = getTeamName(getPlayerTeam(thePlayer)) end
-                return user, getPlayerName(thePlayer), getPlayerIP(thePlayer), getPlayerSerial(thePlayer), getElementHealth(thePlayer), getPedArmor(thePlayer), getPlayerMoney(thePlayer), getElementModel(thePlayer) or 0, team, getElementInterior(thePlayer), getElementDimension(thePlayer), vehOwner or "N/A", vehName or "No", vehHp or "N/A", vehModel or "N/A", checkBank or "No", cardDep or "N/A", cardNum or "N/A", cardLvl or "N/A"
+                return user, getPlayerName(thePlayer), getPlayerIP(thePlayer), getPlayerSerial(thePlayer), getElementHealth(thePlayer), getPedArmor(thePlayer), getPlayerMoney(thePlayer), getElementModel(thePlayer), team, getElementInterior(thePlayer), getElementDimension(thePlayer), vehOwner or "N/A", vehName or "No", vehHp or "N/A", vehModel or "N/A", checkBank or "No", cardDep or "N/A", cardNum or "N/A", cardLvl or "N/A", checkLog
             end
         end
         --[[local guns = { }

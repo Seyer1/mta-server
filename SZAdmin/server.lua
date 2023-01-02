@@ -10,10 +10,10 @@ addEventHandler("[SZAdmin]:checkStaff", getRootElement(),
 addEvent("[SZAdmin]:getInfo", true)
 addEventHandler("[SZAdmin]:getInfo", getRootElement(),
 	function(target)
-		local user, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner, vehName, vehHp, vehModel, checkBank, cardDep, cardNum, cardLvl = exports.SZMisc:_get("admin", "load", target)
+		local user, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner, vehName, vehHp, vehModel, checkBank, cardDep, cardNum, cardLvl, log = exports.SZMisc:_get("admin", "load", target)
 		if armor == 0 then armor = "No" end if int == 0 then int = "Normal" end if dim == 0 then dim = "Normal" end
 		if int == 10 and dim == 1 then int = "Banco LV" dim = "Banco LV" end
-		triggerClientEvent(source, "[SZAdmin]:showInfo", source, user, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner, vehName, vehHp, vehModel, checkBank, cardDep, cardNum, cardLvl) 
+		triggerClientEvent(source, "[SZAdmin]:showInfo", source, user, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner, vehName, vehHp, vehModel, checkBank, cardDep, cardNum, cardLvl, log) 
 	end
 )
 
@@ -22,12 +22,13 @@ addEventHandler("[SZAdmin]:bankAdmin", getRootElement(),
 	function(data, staffName, amount, whatDo, lvl)
 		local target, targetName, targetIP, targetSerial = exports.SZMisc:_get("user", "getSomePlayerInfo", data)
 		local staff, staffName, staffIP, staffSerial = exports.SZMisc:_get("user", "getSomePlayerInfo", source)
-		local check = exports.SZSQL:_QuerySingle("SELECT * FROM bank WHERE User = ?", target)
+		local deposited, _, actualLvl = exports.SZMisc:_get("bank", "admin", data)
 		local date = exports.SZMisc:_fecha()
-		local reason, deposited, actualLvl
-		if check then 
-			deposited = check.Deposited
-			actualLvl = check.Lvl
+		local reason
+
+		if whatDo == "seeLog" then
+			local log = exports.SZMisc:_get("bank", "targetLog", data)
+			triggerClientEvent(source, "[SZAdmin]:refreshLog", source, log)
 		end
 
 		if whatDo == "dep" or whatDo == "ext" then reason = bankDepExt(data, staffName, amount, whatDo, target, deposited)
@@ -36,7 +37,6 @@ addEventHandler("[SZAdmin]:bankAdmin", getRootElement(),
 			if lvl ~= actualLvl then reason = bankChangeLvl(data, staffName, target, actualLvl, lvl)
 			else exports.SZMisc:_msgsv("admin", "err", "bankalreadythatlvl", source)
 			end
-		elseif whatDo == "seelog" then showReg(target)
 		end
 		
 		if reason == "[NewExt]" or reason == "[NewDep]" then
@@ -49,16 +49,16 @@ addEventHandler("[SZAdmin]:bankAdmin", getRootElement(),
 )
 
 --Main functions
-function bankDepExt(data, staffName, amount, whatDo, target, checkDep)	
+function bankDepExt(data, staffName, amount, whatDo, target, deposited)	
 	local newDep, reason
 	if whatDo == "dep" then
-		if checkDep + amount < 2147483278 then 
-			newDep = checkDep + amount 
+		if deposited + amount < 2147483278 then 
+			newDep = deposited + amount 
 			reason = "[NewDep]" 
 		end
 	elseif whatDo == "ext" then
-		if checkDep - amount > 0 then 
-			newDep = checkDep - amount 
+		if deposited - amount > 0 then 
+			newDep = deposited - amount 
 			reason = "[NewExt]" 
 		end
 	end
@@ -82,7 +82,7 @@ function bankGiveDel(data, staffName, staffacc, target, ip, serial, date)
 		exports.SZSQL:_Exec("DELETE FROM bank WHERE User = ?", target)
 		triggerClientEvent(source, "[SZAdmin]:AdmininstrateCard", source, "No")
 		triggerClientEvent(source, "[SZAdmin]:refreshTar", source, "No", "N/A", "N/A", "N/A")
-		exports.SZMisc:_msgsvstaff("bankdelCard", staffName, 0, 0, data)
+		exports.SZMisc:_msgsvstaff("bankdelCard", staffName, _, _, data)
 		reason = "[DelCard]"
 	else
 		local cardNum = math.random(1000, 9999).."."..math.random(1000, 9999).."."..math.random(1000, 9999).."."..math.random(1000, 9999)
@@ -107,11 +107,4 @@ function bankChangeLvl(data, staffName, target, checkLvl, lvl)
 	triggerClientEvent(source, "[SZAdmin]:refreshLvl", source, lvl)
 
 	return "[ChangeLvl]"
-end
-
-function showReg(target)
-	local log = exports.SZSQL:_Query("SELECT * FROM banklog WHERE User = ?", target)
-	local bankStaffRegister = exports.SZSQL:_Query("SELECT * FROM staffbanklog WHERE TargetAcc = ?", target)
-	for i, v in ipairs(bankStaffRegister) do table.insert(log, v) end
-	triggerClientEvent(source, "[SZAdmin]:refreshLog", source, log)
 end

@@ -77,15 +77,16 @@ local admin_bankRegister_list_newDep = dgsGridListAddColumn(admin_bankRegister_l
 local admin_bankRegister_list_date = dgsGridListAddColumn(admin_bankRegister_list, "Date", 0.19)
 local admin_bankRegister_list_ip = dgsGridListAddColumn(admin_bankRegister_list, "IP", 0.16)
 local admin_bankRegister_list_serial = dgsGridListAddColumn(admin_bankRegister_list, "Serial", 0.38)
-local admin_bankRegister_list_oldLvl = dgsGridListAddColumn(admin_bankRegister_list, "OldLvl", 0.13)
-local admin_bankRegister_list_newLvl = dgsGridListAddColumn(admin_bankRegister_list, "NewLvl", 0.13)
-local admin_bankRegister_list_staff = dgsGridListAddColumn(admin_bankRegister_list, "byStaff", 0.38)
+local admin_bankRegister_list_oldLvl = dgsGridListAddColumn(admin_bankRegister_list, "Old Lvl", 0.13)
+local admin_bankRegister_list_newLvl = dgsGridListAddColumn(admin_bankRegister_list, "New Lvl", 0.13)
+local admin_bankRegister_list_staff = dgsGridListAddColumn(admin_bankRegister_list, "by Staff", 0.38)
 dgsGridListSetSortEnabled(admin_bankRegister_list, false)
+dgsSetEnabled(admin_playerBank_golog, false)
 
 local admin_playerBank_gogiftremove = dgsCreateButton(x*343, y*170, x*100, y*20, "Regalar/Eliminar tarjeta", false, admin_bank_tab, _, _, _, _, _, _, tocolor(251, 55, 0, 150), tocolor(251, 55, 0, 200), tocolor(251, 55, 0, 255))
 local admin_options_tab = dgsCreateTab(" Options ", admin_main_tab)
 
-bindKey("o", "down", function() triggerServerEvent("[SZAdmin]:checkStaff", getLocalPlayer(), getLocalPlayer()) end)
+bindKey("o", "down", function() triggerServerEvent("[SZAdmin]:checkStaff", localPlayer, localPlayer) end)
 
 --Main events
 addEventHandler("onDgsMouseClick", dgsRoot,
@@ -100,10 +101,10 @@ addEventHandler("onDgsMouseClick", dgsRoot,
 				elseif source == admin_playerBank_gochangelvl then changeVisibility("lvl")
 				elseif source == admin_playerBank_gogiftremove then 
 					hide()
-					triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, 0, "givedel", "")
+					triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, _, "givedel", _)
 				elseif source == admin_playerBank_golog then 
 					changeVisibility("log")
-					triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, 0, "seelog", "")
+					triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, _, "seeLog", _)
 				elseif source == admin_playerBank_changeDep then changeBankDep(data, staffName)
 				elseif source == admin_playerBank_changeLvl then changeCardLvl(data, staffName)
 				elseif source == admin_user_serial or source == admin_bank_serial then copySerial()
@@ -117,7 +118,7 @@ addEventHandler("onDgsMouseClick", dgsRoot,
 
 addEvent("[SZAdmin]:showInfo", true)
 addEventHandler("[SZAdmin]:showInfo", getLocalPlayer(),
-	function(user, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner, vehName, vehHp, vehModel, checkBank, cardDep, cardNum, cardLvl)
+	function(user, nick, ip, serial, hp, armor, money, skin, team, int, dim, vehOwner, vehName, vehHp, vehModel, checkBank, cardDep, cardNum, cardLvl, log)
 		---[Main]---
 		dgsSetText(admin_user_nick, "Nick: "..nick)
 		dgsSetText(admin_user_acc, "Account: "..user)
@@ -143,8 +144,8 @@ addEventHandler("[SZAdmin]:showInfo", getLocalPlayer(),
 		dgsSetText(admin_playerBank_lvl, "Tipo de tarjeta: "..cardLvl)
 		dgsSetText(admin_playerBank_num, "Número: "..cardNum)
 		dgsSetText(admin_playerBank_dep, "Depositado: $"..cardDep)
- 
-		activate(checkBank)
+		
+		activate(checkBank, log)
 	end
 )
 
@@ -164,7 +165,6 @@ addEventHandler("[SZAdmin]:abrir", getLocalPlayer(),
 		end
 	end
 )
-
 
 addEvent("[SZAdmin]:refreshTar", true)
 addEventHandler("[SZAdmin]:refreshTar", getLocalPlayer(),
@@ -193,42 +193,6 @@ addEventHandler("[SZAdmin]:refreshLvl", getLocalPlayer(),
 	end
 )
 
-addEvent("[SZAdmin]:refreshLog", true)
-addEventHandler("[SZAdmin]:refreshLog", getLocalPlayer(),
-	function(log)
-		local r, g, b
-		local elements = {
-			[1] = admin_bankRegister_list_reason,
-			[2] = admin_bankRegister_list_lastDep,
-			[3] = admin_bankRegister_list_amount,
-			[4] = admin_bankRegister_list_newDep,
-			[5] = admin_bankRegister_list_date,
-			[6] = admin_bankRegister_list_ip,
-			[7] = admin_bankRegister_list_serial,
-			[8] = admin_bankRegister_list_oldLvl,
-			[9] = admin_bankRegister_list_newLvl,
-			[10] = admin_bankRegister_list_staff
-		}
-
-		for i, v in ipairs(log) do
-			local reason, lastDep, amount, newDep, date, ip, serial, oldLvl, newLvl, byStaff = log[i].Reason, "$"..log[i].LastDeposited, log[i].Amount, "$"..log[i].NewDeposited, log[i].Date, log[i].IP, log[i].Serial, log[i].OldLvl or "-", log[i].NewLvl or "-", log[i].Staff or "-"
-			if reason == "[Extraction]" then r, g, b = 204, 0, 0
-			elseif reason == "[Deposited]" then r, g, b = 0, 204, 0
-			else r, g, b = 204, 204, 0
-			end
-
-			if reason == "[ChangeLvl]" or reason == "[GiveCard]" or reason == "[DelCard]" then 
-				lastDep = "-"
-				amount = "-"
-				newDep = "-"
-			end
-
-			local row = dgsGridListAddRow(admin_bankRegister_list, _, reason, lastDep, amount, newDep, date, ip, serial, oldLvl, newLvl, byStaff)
-			for _, v in ipairs(elements) do dgsGridListSetItemColor(admin_bankRegister_list, row, v, tocolor(r,g,b)) end
-		end
-	end
-)
-
 addEventHandler("onClientPlayerJoin", root,
 	function()
 		local row = dgsGridListAddRow(admin_user_list)
@@ -246,8 +210,7 @@ addEventHandler("onClientPlayerQuit", root,
 	end
 )
 
-function activate(hasCard)
-	dgsSetEnabled(admin_playerBank_golog, true)
+function activate(hasCard, log)
 	dgsSetEnabled(admin_playerBank_gogiftremove, true)
 	if hasCard == "No" then
 		dgsSetEnabled(admin_playerBank_gochangedep, false)
@@ -258,20 +221,86 @@ function activate(hasCard)
 		dgsSetEnabled(admin_playerBank_gochangelvl, true)
 		dgsSetText(admin_playerBank_gogiftremove, "Eliminar tarjeta")
 	end
+	if log then dgsSetEnabled(admin_playerBank_golog, true) end
 end
 addEvent("[SZAdmin]:AdmininstrateCard", true)
 addEventHandler("[SZAdmin]:AdmininstrateCard", getLocalPlayer(), activate)
 
 --Main functions
-function refresh() 
-	dgsGridListClear(admin_user_list)
-	dgsGridListClear(admin_bankRegister_list)
-    for _, v in pairs(getElementsByType("player")) do
-        local row = dgsGridListAddRow(admin_user_list)
-        dgsGridListSetItemText(admin_user_list, row, admin_users_list_show, getPlayerName(v))
-        dgsGridListSetItemData(admin_user_list, row, admin_users_list_show, v)
-    end
+function go(data)
+	triggerServerEvent("[SZAdmin]:getInfo", getLocalPlayer(), data)
+	dgsSetEnabled(admin_goreconnect, true)
+	dgsSetEnabled(admin_goban, true)
+end 
+
+function changeBankDep(data, staffName)
+	local amount, whatDo
+	if dgsRadioButtonGetSelected(admin_bank_add) or dgsRadioButtonGetSelected(admin_bank_ext) then
+		if dgsRadioButtonGetSelected(admin_bank_add) then 
+			amount = dgsGetText(admin_bank_amountDep)
+			whatDo = "dep"
+		else 
+			amount = dgsGetText(admin_bank_amountExt) 
+			whatDo = "ext"
+		end
+		if amount ~= "" then
+			if tonumber(amount) then
+				if tonumber(amount) >= 0 then triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, amount, whatDo, _)
+				else exports.SZMisc:_msgcl("gral", "err", "cant")
+				end
+			else exports.SZMisc:_msgcl("gral", "err", "nro")
+			end
+		else exports.SZMisc:_msgcl("gral", "err", "some")
+		end
+	else exports.SZMisc:_msgcl("gral", "err", "func")
+	end
 end
+
+function changeCardLvl(data, staffName)
+	if dgsRadioButtonGetSelected(admin_bank_normal) or dgsRadioButtonGetSelected(admin_bank_gold) or dgsRadioButtonGetSelected(admin_bank_platinum) then
+		local lvl
+		if dgsRadioButtonGetSelected(admin_bank_normal) then lvl = "Normal" 
+		elseif dgsRadioButtonGetSelected(admin_bank_gold) then lvl = "Gold"
+		else lvl = "Platinum"
+		end
+		triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, _, "changelvl", lvl)
+	else exports.SZMisc:_msgcl("gral", "err", "func")
+	end
+end
+
+addEvent("[SZAdmin]:refreshLog", true)
+addEventHandler("[SZAdmin]:refreshLog", getLocalPlayer(),
+	function(log)
+		local log = sortLog(log)
+		
+		local r, g, b
+		local elements = {
+			[1] = admin_bankRegister_list_reason,
+			[2] = admin_bankRegister_list_lastDep,
+			[3] = admin_bankRegister_list_amount,
+			[4] = admin_bankRegister_list_newDep,
+			[5] = admin_bankRegister_list_date,
+			[6] = admin_bankRegister_list_ip,
+			[7] = admin_bankRegister_list_serial,
+			[8] = admin_bankRegister_list_oldLvl,
+			[9] = admin_bankRegister_list_newLvl,
+			[10] = admin_bankRegister_list_staff
+		}
+		for i, v in ipairs(log) do
+			local reason, lastDep, amount, newDep, date, ip, serial, oldLvl, newLvl, byStaff = log[i].Reason, "$"..log[i].LastDeposited, log[i].Amount, "$"..log[i].NewDeposited, log[i].Date, log[i].IP, log[i].Serial, log[i].OldLvl or "-", log[i].NewLvl or "-", log[i].Staff or "-"
+
+			if reason == "[Extraction]" then r, g, b = 204, 0, 0
+			elseif reason == "[Deposited]" then r, g, b = 0, 204, 0
+			else r, g, b = 204, 204, 0
+			end
+
+			if reason == "[ChangeLvl]" or reason == "[GiveCard]" or reason == "[DelCard]" then lastDep, amount, newDep = "-" end
+
+			local row = dgsGridListAddRow(admin_bankRegister_list, _, reason, lastDep, amount, newDep, date, ip, serial, oldLvl, newLvl, byStaff)
+			for _, v in ipairs(elements) do dgsGridListSetItemColor(admin_bankRegister_list, row, v, tocolor(r, g, b)) end
+		end
+	end
+)
 
 function hide()
 	dgsSetVisible(admin_bank_add, false)
@@ -305,41 +334,6 @@ function changeVisibility(whatDo)
 	end
 end
 
-function changeBankDep(data, staffName)
-	local amount, whatDo
-	if dgsRadioButtonGetSelected(admin_bank_add) or dgsRadioButtonGetSelected(admin_bank_ext) then
-		if dgsRadioButtonGetSelected(admin_bank_add) then 
-			amount = dgsGetText(admin_bank_amountDep)
-			whatDo = "dep"
-		else 
-			amount = dgsGetText(admin_bank_amountExt) 
-			whatDo = "ext"
-		end
-		if amount ~= "" then
-			if tonumber(amount) then
-				if tonumber(amount) >= 0 then triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, amount, whatDo, "")
-				else exports.SZMisc:_msgcl("gral", "err", "cant")
-				end
-			else exports.SZMisc:_msgcl("gral", "err", "nro")
-			end
-		else exports.SZMisc:_msgcl("gral", "err", "some")
-		end
-	else exports.SZMisc:_msgcl("gral", "err", "func")
-	end
-end
-
-function changeCardLvl(data, staffName)
-	if dgsRadioButtonGetSelected(admin_bank_normal) or dgsRadioButtonGetSelected(admin_bank_gold) or dgsRadioButtonGetSelected(admin_bank_platinum) then
-		local lvl
-		if dgsRadioButtonGetSelected(admin_bank_normal) then lvl = "Normal" 
-		elseif dgsRadioButtonGetSelected(admin_bank_gold) then lvl = "Gold"
-		else lvl = "Platinum"
-		end
-		triggerServerEvent("[SZAdmin]:bankAdmin", getLocalPlayer(), data, staffName, 0, "changelvl", lvl)
-	else exports.SZMisc:_msgcl("gral", "err", "func")
-	end
-end
-
 function copySerial()
 	local serial = dgsGetText(source):gsub("Serial: ", "")
 	if serial ~= "N/A" then
@@ -348,11 +342,32 @@ function copySerial()
 	end
 end
 
-function go(data)
-	triggerServerEvent("[SZAdmin]:getInfo", getLocalPlayer(), data)
-	dgsSetEnabled(admin_goreconnect, true)
-	dgsSetEnabled(admin_goban, true)
-end 
+function refresh() 
+	dgsGridListClear(admin_user_list)
+	dgsGridListClear(admin_bankRegister_list)
+    for _, v in pairs(getElementsByType("player")) do
+        local row = dgsGridListAddRow(admin_user_list)
+        dgsGridListSetItemText(admin_user_list, row, admin_users_list_show, getPlayerName(v))
+        dgsGridListSetItemData(admin_user_list, row, admin_users_list_show, v)
+    end
+end
+
+function sortLog(log)
+	local i = 1
+	local day, day2, save
+	while i < #log do
+		day, day2 = log[i].Date, log[i+1].Date
+		if day < day2 then
+			save = log[i]
+			log[i] = log[i+1]
+			log[i+1] = save
+			i = 0
+		end
+		i = i + 1
+	end
+
+	return log
+end
 
 function close()
 	dgsSetText(admin_user_nick, "Nick: N/A")
